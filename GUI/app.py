@@ -235,7 +235,7 @@ def cancel_addnew_herb():
     herbs_window("<Button-1>")
 
 def addnew_herb(event):
-    global tp, thumbnail_photo
+    global tp, thumbnail_photo,input_herb_photo
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()

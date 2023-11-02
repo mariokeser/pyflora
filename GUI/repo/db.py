@@ -155,7 +155,7 @@ def get_user(conn, username):
         record = cursor.fetchone()
 
         if record != None: 
-            return (record[0], record[1], record[2], record[3])
+            return (record[0], record[2], record[2], record[3])
         else:
             cursor.close()
     except sqlite3.Error as err: 
