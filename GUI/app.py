@@ -184,6 +184,7 @@ herb_image_get = StringVar(value="")
 bigimg_herb_photo = None 
 smallimg_herb_photo = None 
 thumbnail_herb_photo = None
+
 # za dohvaćanje image iz get funkcije
 def get_images():
    global bigimg_herb_photo, smallimg_herb_photo, herb_image
@@ -262,10 +263,10 @@ def addnew_herb(event):
     Entry(frame_2, textvariable=input_luminosity,  background="white", fg="black", width=50).grid(row=6, column=0, pady=5, padx=50)
     Label(frame_2, text="Add herb height", fg="red").grid(row=7, column=0, sticky="w",  pady=5, padx=50)
     Entry(frame_2, textvariable=input_herb_height,  background="white", fg="black", width=50).grid(row=8, column=0, pady=5, padx=50)
-    
-    Button(frame_2, text="Select herb image", command=add_herb_photo).grid(row=9, column=0, sticky="w", padx=50)
     thumbnail_photo = Label(frame_2)
     thumbnail_photo.grid(row=9, column=0, sticky="e", padx=50)
+    Button(frame_2, text="Select herb image", command=add_herb_photo).grid(row=9, column=0, sticky="w", padx=50)
+    
     Label(frame_2, text="Add air temperature", fg="red").grid(row=1, column=1, sticky="w", padx=20)
     Entry(frame_2, textvariable=input_air_temperature,  background="white", fg="black", width=50).grid(row=2, column=1, sticky="w", padx=20)
     Label(frame_2, text="Add ph value", fg="red").grid(row=3, column=1, sticky="w", padx=20)
