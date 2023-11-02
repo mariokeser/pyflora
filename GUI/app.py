@@ -1,10 +1,10 @@
 from tkinter import *
-from tkinter import Tk, Toplevel, Label, LabelFrame,Button, Entry, Frame, messagebox, ttk, Canvas
+from tkinter import Tk, Toplevel, Label, LabelFrame,Button, Entry, Frame, messagebox, ttk, Canvas, filedialog
 from tkinter.messagebox import askyesno
 from PIL import Image, ImageTk 
 from repo import db
 #konekcija na bazu podataka
-conn = db.get_connection("./GUI/data/Pyflora.db")
+conn = db.get_connection("./pyflora/GUI/data/Pyflora.db")
 #root GUI-a
 root = Tk()
 
@@ -158,28 +158,7 @@ input_ph_value = StringVar(value=" ")
 input_features = StringVar(value=" ")
 input_herb_height = StringVar(value=" ")
 input_herb_width = StringVar(value=" ")
-
-# images u option menu do option_dict
-#photo_herb =  "./GUI/images/herb_photo.jpg'"
-basil = './GUI/images/BASIL.jpg'
-cat_grass = './GUI/images/CAT_GRASS.jpg'
-catnip = './GUI/images/CATNIP.jpg'
-chamomile = './GUI/images/CHAMOMILE.jpg'
-cilantro = './GUI/images/CILANTRO.jpg'
-lemon = './GUI/images/LEMON_BALM.jpg'
-lemongrass = './GUI/images/LEMONGRASS.jpg'
-marjoram = './GUI/images/MARJORAM.jpg'
-mint = './GUI/images/MINT.jpg'
-oregano = './GUI/images/OREGANO.jpg'
-
-# za dodavanje image u bazu
-value_inside = StringVar(value="")
-name_option = []
-name_option_b = []
-option_dict = { 'Basil': basil,'Cat_Grass': cat_grass,'Oregano': oregano, 'Catnip': catnip, 'Chamomile': chamomile, 'Cilantro': cilantro,
-                'Lemon': lemon, 'Lemongrass': lemongrass, 'Marjoram': marjoram, 'Mint': mint}   
-
-
+input_herb_photo = "./pyflora/GUI/images/herb_photo.jpg"
 #varijable za get funkciju
 herb_name = StringVar(value="")
 soil_moisture = StringVar(value="")
@@ -189,6 +168,7 @@ ph_value = StringVar(value="")
 features = StringVar(value="")
 herb_height = StringVar(value="")
 herb_width = StringVar(value="")
+herb_image=StringVar(value="")
 #varijable za input iz get unkcije u entrye, labele i canvas
 herb_name_get = StringVar(value="")
 herb_moisture_get = StringVar(value="")
@@ -202,21 +182,27 @@ herb_luminosity_get = StringVar(value="")
 # za select images
 bigimg_herb_photo = None 
 smallimg_herb_photo = None 
-def set_images():
+thumbnail_herb_photo = None
+def get_images():
    global bigimg_herb_photo, smallimg_herb_photo, herb_image
    big_img = Image.open(herb_image).resize((303, 303))
    bigimg_herb_photo = ImageTk.PhotoImage(big_img)
    small_img = Image.open(herb_image).resize((100, 140)) 
    smallimg_herb_photo = ImageTk.PhotoImage(small_img)
-   
 
+def set_thumbnail():
+    global thumbnail_herb_photo, thumbnail_photo
+    img_thumb = Image.open(input_herb_photo).resize((303, 303))
+    img_thumb.thumbnail((80, 200))
+    thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
+    thumbnail_photo.config(image=thumbnail_herb_photo)
 
 
         
 def store_addnew_herb(): 
-    global herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, herb_image, bigimg_herb_photo
-    #db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
-     #          ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=photo_herb)
+    global herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, herb_image
+    db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
+             ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=input_herb_photo)
     input_herb_name.set("")
     input_soil_moisture.set("")
     input_luminosity.set("")
@@ -234,14 +220,14 @@ def store_addnew_herb():
     herb_height_get.set(herb_height)
     herb_width_get.set(herb_width)
     herb_luminosity_get.set(luminosity)
-    set_images()
+    #get_images()
     herbs_window("<Button-1>")
 
 def cancel_addnew_herb():
     herbs_window("<Button-1>")
 
 def addnew_herb(event):
-    global tp, option_dict, name_option, value_inside,  chosen_herb_photo
+    global tp, thumbnail_photo
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -269,20 +255,15 @@ def addnew_herb(event):
     Entry(frame_2, textvariable=input_luminosity,  background="white", fg="black", width=50).grid(row=6, column=0, pady=5, padx=50)
     Label(frame_2, text="Add herb height", fg="red").grid(row=7, column=0, sticky="w",  pady=5, padx=50)
     Entry(frame_2, textvariable=input_herb_height,  background="white", fg="black", width=50).grid(row=8, column=0, pady=5, padx=50)
-    name_option = []
-    for i in option_dict.items():
-       name_option.append(i[0])
-
-    def display(choice):
-        global photo_herb
-        choice = value_inside.get()
-        photo_herb = option_dict[choice]
-        return photo_herb
-    value_inside.set("Select herb image") 
-    herb_menu = OptionMenu(frame_2, value_inside, *name_option, command=display)
-    herb_menu.config(width=46, height=3)
-    herb_menu.grid(row=10, column=0, sticky="w", padx=50)
+    def input_herb_photo():
+        global input_herb_photo, thumbnail_herb_photo
+        input_herb_photo = filedialog.askopenfilename(title="Select herb image")
+        set_thumbnail()
+    Button(frame_2, text="Select herb image", command=input_herb_photo).grid(row=9, column=0, sticky="w", padx=50)
+    thumbnail_photo = Label(frame_2)
+    thumbnail_photo.grid(row=9, column=0, sticky="e", padx=50)
     
+
     Label(frame_2, text="Add air temperature", fg="red").grid(row=1, column=1, sticky="w", padx=20)
     Entry(frame_2, textvariable=input_air_temperature,  background="white", fg="black", width=50).grid(row=2, column=1, sticky="w", padx=20)
     Label(frame_2, text="Add ph value", fg="red").grid(row=3, column=1, sticky="w", padx=20)
@@ -401,7 +382,7 @@ def details_pyflora_container(event):
     Button(frame_2, text="DELETE", fg="red",width=12, command=delete_button_pycontainer).grid(row=0, column=1, sticky=E, ipady=2, pady=10, padx=165)
     canvas = Canvas(frame_2, width= 300, height= 300, bg="SpringGreen2")
     canvas.grid(row=2, column=1, sticky=E, rowspan=8)
-    photo_filename = "./GUI/images/Herb_photo.jpg"  
+    photo_filename = "./pyflora/GUI/images/Herb_photo.jpg"  
     img = Image.open(photo_filename).resize((305,305))
     img_obj = ImageTk.PhotoImage(img)
     canvas.create_image((0,0),image=img_obj, anchor=NW)
@@ -448,7 +429,7 @@ def main_window(event):
     canvas.create_text(100, 20, text="Kitchen\n - shelf by the window", fill="black",anchor="w", font=('Helvetica 10 bold'))
     canvas.create_text(115, 80, text = "Status",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
     canvas.create_text(150, 90, text = "EMPTY pycontainer",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
-    photo_filename = "./GUI/images/Herb_photo.jpg"
+    photo_filename = "./pyflora/GUI/images/herb_photo.jpg"
     img = Image.open(photo_filename).resize((90,130))
     img_obj = ImageTk.PhotoImage(img, master=root)
     canvas.create_image(0,0, anchor=NW, image=img_obj)

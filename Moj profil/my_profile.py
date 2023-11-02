@@ -9,7 +9,7 @@ from repo import csv, json, db # iz podfoldera repo(koji je u ovom foderu Moj pr
 root = tk.Tk()
 root.title("Moj profil")
 
-photo_filename = "./Moj profil/images/profile_placeholder.jpg" #globalna varijabla za pristup konkretnom/oj placeholderu/slici
+photo_filename = "./pyflora/Moj profil/images/profile_placeholder.jpg" #globalna varijabla za pristup konkretnom/oj placeholderu/slici
 
 lblimg_profile_photo = None # globalne varijable za postavljanje novih slika u profile i edit tab, na None su na početku kako bi se mogle mijenjati
 lblimg_edit_photo = None # pa će se pomoću funkcije set_images() mijenjati kako loadamo slike
@@ -80,7 +80,7 @@ def set_images(): # uređuje postavljanje svih slika,prvi dio funkcije odnosi se
 def save_data():
     if var_repo.get() == "csv": #ako je var_repo-stringvar za upis medija kojeg smo odabrali za pohranu naše aplikacije, .get() za dohvaćanje
         csv.save(               #jednak csv onda popunjavamo save_csv funkciju
-            "./Moj profil/data/data.csv",    # u zagradi je putanja(path) i lista(data), pozvali smo se na funkciju save_csv(path, data)
+            "./pyflora/Moj profil/data/data.csv",    # u zagradi je putanja(path) i lista(data), pozvali smo se na funkciju save_csv(path, data)
             [                   #  putanja(path) je -"./data/data.csv", a lista ispod je data
                 photo_filename,  # slika.   
                 var_name.get(),  # ime i prezime, treba .get() na varijablu
@@ -89,7 +89,7 @@ def save_data():
         )
     elif var_repo.get() == "json": # ako je jedank json
         json.save(              # onda popunjavamo save_json() funkciju
-            "./Moj profil/data/data.json",  # pozvali smo se na funkciju save_json(path, data), path je "./data/data.json"
+            "./pyflora/Moj profil/data/data.json",  # pozvali smo se na funkciju save_json(path, data), path je "./data/data.json"
             {               # data je dictionary ispod
                 "photo_filename": photo_filename,  # dictionary je sa key:value
                 "name": var_name.get(),

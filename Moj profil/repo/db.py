@@ -26,7 +26,7 @@ def get_connection(db_name):
         print(f"ERROR: {err}")
 
 # nakon što smo napravili funkciju za dohvaćanje konekcije get_connection moramo u našem programu i stvoriti konekciju
-conn = get_connection("./Moj profil/data/data.db") #u varijablu conn predamo funkciju za dohvaćanje konekcije i predamo putanju do baze
+conn = get_connection("./pyflora/Moj profil/data/data.db") #u varijablu conn predamo funkciju za dohvaćanje konekcije i predamo putanju do baze
 # i sad imamo konekciju nad bazom-data.db smo nazvali našu bazu padataka
 
 #i nakon toga pravimo funkciju save_db, prvo dohvaćamo konekciju nad bazom-get_connection, pa spremamo vrijednosti u bazu sa save_db
@@ -73,7 +73,7 @@ def get_connection(db_name):
         print(f"ERROR: {err}")
 
 
-conn = get_connection("./Moj profil/data/data.db") 
+conn = get_connection("./pyflora/Moj profil/data/data.db") 
 
 def save(conn, photo_filename, name, skills):
     try:
