@@ -37,7 +37,7 @@ create_containers_query = """CREATE TABLE IF NOT EXISTS Containers(
 add_new_containers_query = """INSERT INTO Containers (name, herb_id) VALUES (?, ?);"""
 
 select_all_containers_query = """SELECT name FROM Containers;"""
-# Nikola: end
+
 
 create_herbs_query = """CREATE TABLE IF NOT EXISTS Herbs(
     id INTEGER PRIMARY KEY,
@@ -49,7 +49,7 @@ create_herbs_query = """CREATE TABLE IF NOT EXISTS Herbs(
     features TEXT NOT NULL,
     herb_height INTEGER NOT NULL,
     herb_width INTEGER NOT NULL,
-    image TEXT NOT NULL
+    image VARCHAR(100) NOT NULL
 );"""
 
 add_new_herbs_query = """INSERT INTO Herbs (name, soil_moisture, luminosity, air_temperature,ph_value,

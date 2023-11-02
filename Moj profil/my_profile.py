@@ -87,15 +87,15 @@ def save_data():
                 var_skills.get()  # vještine
             ]
         )
-    elif var_repo.get() == "json": # ako je jedank json
-        json.save(              # onda popunjavamo save_json() funkciju
-            "./pyflora/Moj profil/data/data.json",  # pozvali smo se na funkciju save_json(path, data), path je "./data/data.json"
-            {               # data je dictionary ispod
-                "photo_filename": photo_filename,  # dictionary je sa key:value
-                "name": var_name.get(),
-                "skills": var_skills.get()
-            }
-        )
+    #elif var_repo.get() == "json": # ako je jedank json
+        #json.save(              # onda popunjavamo save_json() funkciju
+         #   "./pyflora/Moj profil/data/data.json",  # pozvali smo se na funkciju save_json(path, data), path je "./data/data.json"
+          #  {               # data je dictionary ispod
+          #      "photo_filename": photo_filename,  # dictionary je sa key:value
+           #     "name": var_name.get(),
+           #     "skills": var_skills.get()
+           # }
+       # )
     elif var_repo.get() == "db":  # ako je postavljen na database- db, spremamo u bazu
         db.save(conn, photo_filename, var_name.get(), var_skills.get())# popunjavamo funkciju save_db- conn, photo_filename,name i skills su
 #sadržani u StringVar varijablama na koje ide .get()-radi dohvaćanja upisanih vrijednosti u te varijable-to želimo spremiti u bazu

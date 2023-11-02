@@ -178,24 +178,31 @@ herb_features_get = StringVar(value="")
 herb_height_get = StringVar(value="")
 herb_width_get = StringVar(value="")
 herb_luminosity_get = StringVar(value="")
+herb_image_get = StringVar(value="")
 
-# za select images
+# za select/get images
 bigimg_herb_photo = None 
 smallimg_herb_photo = None 
 thumbnail_herb_photo = None
+# za dohvaćanje image iz get funkcije
 def get_images():
    global bigimg_herb_photo, smallimg_herb_photo, herb_image
    big_img = Image.open(herb_image).resize((303, 303))
    bigimg_herb_photo = ImageTk.PhotoImage(big_img)
    small_img = Image.open(herb_image).resize((100, 140)) 
    smallimg_herb_photo = ImageTk.PhotoImage(small_img)
-
+#za postavljanje image u dodavanje nove biljke windowu, addnew herb
 def set_thumbnail():
-    global thumbnail_herb_photo, thumbnail_photo
-    img_thumb = Image.open(input_herb_photo).resize((303, 303))
-    img_thumb.thumbnail((80, 200))
-    thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
-    thumbnail_photo.config(image=thumbnail_herb_photo)
+       global thumbnail_photo, thumbnail_herb_photo
+       img_thumb = Image.open(input_herb_photo).resize((303, 303))
+       img_thumb.thumbnail((80, 200))
+       thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
+       thumbnail_photo.config(image=thumbnail_herb_photo)
+
+def add_herb_photo():
+        global input_herb_photo
+        input_herb_photo = filedialog.askopenfilename(title="Select herb image")
+        set_thumbnail()
 
 
         
@@ -220,7 +227,7 @@ def store_addnew_herb():
     herb_height_get.set(herb_height)
     herb_width_get.set(herb_width)
     herb_luminosity_get.set(luminosity)
-    #get_images()
+    get_images()
     herbs_window("<Button-1>")
 
 def cancel_addnew_herb():
@@ -255,15 +262,10 @@ def addnew_herb(event):
     Entry(frame_2, textvariable=input_luminosity,  background="white", fg="black", width=50).grid(row=6, column=0, pady=5, padx=50)
     Label(frame_2, text="Add herb height", fg="red").grid(row=7, column=0, sticky="w",  pady=5, padx=50)
     Entry(frame_2, textvariable=input_herb_height,  background="white", fg="black", width=50).grid(row=8, column=0, pady=5, padx=50)
-    def input_herb_photo():
-        global input_herb_photo, thumbnail_herb_photo
-        input_herb_photo = filedialog.askopenfilename(title="Select herb image")
-        set_thumbnail()
-    Button(frame_2, text="Select herb image", command=input_herb_photo).grid(row=9, column=0, sticky="w", padx=50)
+    
+    Button(frame_2, text="Select herb image", command=add_herb_photo).grid(row=9, column=0, sticky="w", padx=50)
     thumbnail_photo = Label(frame_2)
     thumbnail_photo.grid(row=9, column=0, sticky="e", padx=50)
-    
-
     Label(frame_2, text="Add air temperature", fg="red").grid(row=1, column=1, sticky="w", padx=20)
     Entry(frame_2, textvariable=input_air_temperature,  background="white", fg="black", width=50).grid(row=2, column=1, sticky="w", padx=20)
     Label(frame_2, text="Add ph value", fg="red").grid(row=3, column=1, sticky="w", padx=20)
