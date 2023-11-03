@@ -195,7 +195,10 @@ def get_images():
 #za postavljanje image u dodavanje nove biljke windowu, addnew herb
 def set_thumbnail():
        global thumbnail_photo, thumbnail_herb_photo
-       img_thumb = Image.open(input_herb_photo).resize((303, 303))
+       if input_herb_photo == "":
+           return 
+       else:
+        img_thumb = Image.open(input_herb_photo).resize((303, 303))
        img_thumb.thumbnail((80, 200))
        thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
        thumbnail_photo.config(image=thumbnail_herb_photo)

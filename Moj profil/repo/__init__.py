@@ -1,3 +1,0 @@
-# ovaj file je napravljen prije nego smo počeli pisati/ili izdvajati funkcije u file csv.py, db.py i json.py a repo folder je napravljen kad smo 
-#odlučili  izdvojiti te funkcije, ili ih napisati izdvojeno iz file my_profile.py, koji smo počeli pisati prvo kad smo napravili folder Moj profil,
-#podfolder data kreirali smo prije nego smo išli pokrenuti konekciju u my_profile na  datoteke .db, .csv, .json
