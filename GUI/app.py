@@ -184,6 +184,8 @@ herb_image_get = StringVar(value="")
 bigimg_herb_photo = None 
 smallimg_herb_photo = None 
 thumbnail_herb_photo = None
+thumb_photo = None
+
 
 # za dohvaćanje image iz get funkcije
 def get_images():
@@ -199,15 +201,20 @@ def set_thumbnail():
            return 
        else:
         img_thumb = Image.open(input_herb_photo).resize((303, 303))
-       img_thumb.thumbnail((80, 200))
-       thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
-       thumbnail_photo.config(image=thumbnail_herb_photo)
+        img_thumb.thumbnail((80, 200))
+        thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
+        thumbnail_photo.config(image=thumbnail_herb_photo)
 
 def add_herb_photo():
         global input_herb_photo
         input_herb_photo = filedialog.askopenfilename(title="Select herb image")
         set_thumbnail()
-
+def get_thumbnail():
+    global  thumbnail_photo, thumbnail_herb_photo, herb_image
+    img_thumb = Image.open(herb_image).resize((300,300))
+    img_thumb.thumbnail((80,200))
+    thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
+    thumbnail_photo.config(image=thumbnail_herb_photo)
 
         
 def store_addnew_herb(): 
@@ -232,7 +239,7 @@ def store_addnew_herb():
     herb_height_get.set(herb_height)
     herb_width_get.set(herb_width)
     herb_luminosity_get.set(luminosity)
-       
+    
     get_images()
     herbs_window("<Button-1>")
 
@@ -240,7 +247,7 @@ def cancel_addnew_herb():
     herbs_window("<Button-1>")
 
 def addnew_herb(event):
-    global tp, thumbnail_photo,input_herb_photo
+    global tp,input_herb_photo, thumbnail_photo
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -300,8 +307,11 @@ update_ph_value = StringVar(value=" ")
 update_features = StringVar(value=" ")
 update_herb_height = StringVar(value=" ")
 update_herb_width = StringVar(value=" ")
+
+
+
 def update_herb(event):
-    global tp
+    global tp, thumbnail_photo, thumbnail_herb_photo, herb_image
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -320,30 +330,28 @@ def update_herb(event):
     Button(tp, text = "SYNC", fg = "green", width=12).grid(row=1, column=0,pady=10,sticky=E,padx=205, ipady=3)
     frame_2 = Label(tp)
     frame_2.grid(row=2, column=0, pady=20)
-    Label(frame_2, text="Herb", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w",pady=50, padx=50)
+    Label(frame_2, textvariable=herb_name_get, fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w",pady=50, padx=50)
     Label(frame_2, text="Change herb name", fg="red").grid(row=1, column=0, sticky="w",  pady=5, padx=50)
-    Entry(frame_2, textvariable=update_herb_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=50)
+    Entry(frame_2, textvariable=herb_name_get,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=50)
     Label(frame_2, text="Change soil moisture", fg="red").grid(row=3, column=0, sticky="w", pady=5, padx=50)
-    Entry(frame_2, textvariable=update_soil_moisture,  background="white", fg="black", width=50).grid(row=4, column=0, pady=5, padx=50)
+    Entry(frame_2, textvariable=herb_moisture_get,  background="white", fg="black", width=50).grid(row=4, column=0, pady=5, padx=50)
     Label(frame_2, text="Change luminosity", fg="red").grid(row=5, column=0, sticky="w",  pady=5, padx=50)
-    Entry(frame_2, textvariable=update_luminosity,  background="white", fg="black", width=50).grid(row=6, column=0, pady=5, padx=50)
+    Entry(frame_2, textvariable=herb_luminosity_get,  background="white", fg="black", width=50).grid(row=6, column=0, pady=5, padx=50)
     Label(frame_2, text="Change herb height", fg="red").grid(row=7, column=0, sticky="w",  pady=5, padx=50)
-    Entry(frame_2, textvariable=update_herb_height,  background="white", fg="black", width=50).grid(row=8, column=0, pady=5, padx=50)
-    Label(frame_2, text="Change herb image", fg="red").grid(row=9, column=0, sticky="w", padx=50, pady=5)
-    option_list = ["Image 1", "Image 2", "Image 3", "Image 4"]
-    value_inside = StringVar(frame_2)
-    value_inside.set("Select a herb image")
-    herb_menu = OptionMenu(frame_2, value_inside, *option_list)
-    herb_menu.config(width=46)
-    herb_menu.grid(row=10, column=0, sticky="w", padx=50)
+  
+    thumbnail_photo = Label(frame_2)
+    thumbnail_photo.grid(row=9, column=0, sticky="e", padx=50)
+    get_thumbnail()
+    Button(frame_2,text="Change herb image", fg="green", command=add_herb_photo).grid(row=9, column=0, sticky="w",padx=50, pady=5)
+    Entry(frame_2, textvariable=herb_height_get,  background="white", fg="black", width=50).grid(row=8, column=0, pady=5, padx=50)
     Label(frame_2, text="Change air temperature", fg="red").grid(row=1, column=1, sticky="w", padx=20)
-    Entry(frame_2, textvariable=update_air_temperature,  background="white", fg="black", width=50).grid(row=2, column=1, sticky="w", padx=20)
+    Entry(frame_2, textvariable=herb_air_temp_get,  background="white", fg="black", width=50).grid(row=2, column=1, sticky="w", padx=20)
     Label(frame_2, text="Change ph value", fg="red").grid(row=3, column=1, sticky="w", padx=20)
-    Entry(frame_2, textvariable=update_ph_value,  background="white", fg="black", width=50).grid(row=4, column=1, padx=20, sticky="w")
+    Entry(frame_2, textvariable=herb_ph_get,  background="white", fg="black", width=50).grid(row=4, column=1, padx=20, sticky="w")
     Label(frame_2, text="Change features", fg="red").grid(row=5, column=1, sticky="w", padx=20)
-    Entry(frame_2, textvariable=update_features,  background="white", fg="black", width=50).grid(row=6, column=1, padx=20, sticky="w")
+    Entry(frame_2, textvariable=herb_features_get,  background="white", fg="black", width=50).grid(row=6, column=1, padx=20, sticky="w")
     Label(frame_2, text="Change herb width", fg="red").grid(row=7, column=1, sticky="w", padx=20)
-    Entry(frame_2, textvariable=update_herb_width,  background="white", fg="black", width=50).grid(row=8, column=1, padx=20)
+    Entry(frame_2, textvariable=herb_width_get,  background="white", fg="black", width=50).grid(row=8, column=1, padx=20)
     store_button =Button(frame_2, text="STORE", command=store_update_herb, height=1, width=12)
     store_button.grid(row=11, column=1, sticky="w", pady=180, padx=25)
     cancel_button =Button(frame_2, text="CANCEL", command=cancel_update_herb, height=1, width=12)
@@ -483,7 +491,7 @@ def details_herb(event):
     Button(tp, text = "SYNC", fg = "green", width=12).grid(row=1, column=0,pady=20, ipady=3, sticky=W, padx=1090)
     frame_2 = Label(tp)
     frame_2.grid(row=2, column=0, sticky=W)
-    Label(frame_2, textvariable=herb_name_get.get(), fg="green", font=("Arial", 20)).grid(row=0, column=0, padx=200)
+    Label(frame_2, textvariable=herb_name_get, fg="green", font=("Arial", 20)).grid(row=0, column=0, padx=200, sticky="w")
     Button(frame_2, text="UPDATE", fg="green",command=update_herbs, width=12, height=1).grid(row=0, column=1, ipady=2, sticky=W, pady=20, padx=580)
     Button(frame_2, text="DELETE", fg="red",width=12, command=delete_button_herb).grid(row=0, column=1, sticky=W, ipady=2, pady=20, padx=420)
     canvas = Canvas(frame_2, width= 300, height= 300, bg="SpringGreen2")
