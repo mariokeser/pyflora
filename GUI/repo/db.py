@@ -57,7 +57,8 @@ add_new_herbs_query = """INSERT INTO Herbs (name, soil_moisture, luminosity, air
 VALUES (?,?,?,?,?,?,?,?,?);"""
 
 
-select_herb_query = """SELECT * FROM Herbs;"""
+select_herb_query = """SELECT * FROM Herbs WHERE id = ?;"""
+delete_herb_query = """DELETE FROM Herbs WHERE id = ?;"""
 
 
 
@@ -117,6 +118,21 @@ def add_user(conn, name, lastname, username, password):
         
     finally:
         cursor.close()
+#za dohvaćanje usera  u edit profile- 
+def get_user(conn, username): 
+    try:  
+        cursor = conn.cursor()
+
+        cursor.execute(select_query_profile, (username, ))
+
+        record = cursor.fetchone()
+
+        if record != None: 
+            return (record[0], record[2], record[2], record[3])
+        else:
+            cursor.close()
+    except sqlite3.Error as err: 
+        print(f"ERROR: {err}")
 
 #dodavanje posude
 def add_containers(conn, name, herb_id = None):
@@ -144,29 +160,32 @@ def add_herbs(conn, name, soil_moisture, luminosity, air_temperature, ph_value, 
         
     finally:
         cursor.close()
+#Brisanje biljke
+def delete_herb(conn, id): 
+    try:
+        cursor = conn.cursor() 
 
-#za dohvaćanje usera  u edit profile- 
-def get_user(conn, username): 
-    try:  
-        cursor = conn.cursor()
+        if get_herb(conn,id) == None:
+           return False 
 
-        cursor.execute(select_query_profile, (username, ))
+        cursor.execute(delete_herb_query, (id,)) 
 
-        record = cursor.fetchone()
+        conn.commit() 
 
-        if record != None: 
-            return (record[0], record[2], record[2], record[3])
-        else:
-            cursor.close()
-    except sqlite3.Error as err: 
+        return True 
+    except sqlite3.Error as err:
         print(f"ERROR: {err}")
+    finally:
+        cursor.close()
+
+
 
 
 # za dohvaćanje herba u varijable i image
-def get_herb(conn):
+def get_herb(conn, id):
     try:
         cursor = conn.cursor()
-        cursor.execute(select_herb_query)
+        cursor.execute(select_herb_query, (id,))
         record = cursor.fetchone()
         if record != None:
             return(record[1],record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9]) 

@@ -212,8 +212,8 @@ def add_herb_photo():
         
 def store_addnew_herb(): 
     global herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, herb_image
-    db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
-             ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=input_herb_photo)
+    #db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
+     #        ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=input_herb_photo)
     input_herb_name.set("")
     input_soil_moisture.set("")
     input_luminosity.set("")
@@ -222,7 +222,8 @@ def store_addnew_herb():
     input_features.set("")
     input_herb_height.set("")
     input_herb_width.set("")
-    herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, herb_image = db.get_herb(conn) 
+
+    herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, herb_image = db.get_herb(conn, 4) 
     herb_name_get.set(herb_name)
     herb_moisture_get.set(soil_moisture)
     herb_air_temp_get.set(air_temperature)
@@ -231,6 +232,7 @@ def store_addnew_herb():
     herb_height_get.set(herb_height)
     herb_width_get.set(herb_width)
     herb_luminosity_get.set(luminosity)
+       
     get_images()
     herbs_window("<Button-1>")
 
@@ -451,14 +453,15 @@ def main_window(event):
 
 
 #window sa detaljima o konkretnoj biljci
-def delete_herb():
-    pass
+#def deletes_herb():
+ #   db.delete_herb(conn, 3)
 def delete_button_herb():
     answer = askyesno(title="confirmation", message="Are you sure that you want to proceed with delete action?")
     if answer:
-        delete_herb()
+        db.delete_herb(conn, 3)
+        
     else:
-        return
+       return
 def update_herbs():
     update_herb("<Button-1>")
 def details_herb(event):
@@ -481,8 +484,7 @@ def details_herb(event):
     Button(tp, text = "SYNC", fg = "green", width=12).grid(row=1, column=0,pady=20, ipady=3, sticky=W, padx=1090)
     frame_2 = Label(tp)
     frame_2.grid(row=2, column=0, sticky=W)
-    
-    Label(frame_2, textvariable=herb_name_get, fg="green", font=("Arial", 20)).grid(row=0, column=0, padx=200)
+    Label(frame_2, textvariable=herb_name_get.get(), fg="green", font=("Arial", 20)).grid(row=0, column=0, padx=200)
     Button(frame_2, text="UPDATE", fg="green",command=update_herbs, width=12, height=1).grid(row=0, column=1, ipady=2, sticky=W, pady=20, padx=580)
     Button(frame_2, text="DELETE", fg="red",width=12, command=delete_button_herb).grid(row=0, column=1, sticky=W, ipady=2, pady=20, padx=420)
     canvas = Canvas(frame_2, width= 300, height= 300, bg="SpringGreen2")

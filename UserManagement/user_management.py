@@ -4,7 +4,7 @@ from tkinter import messagebox # služi za pokazivanje error screena(boxa) useru
 from repo import db # za import napravljenog db.py modula iz podfoldera repo
 
 
-conn = db.get_connection("./UserManagement/data/Users.db")#napravili smo konekciju na bazu,predali joj modul db i funkciju u tom modulu za  
+conn = db.get_connection("./pyflora/UserManagement/data/Users.db")#napravili smo konekciju na bazu,predali joj modul db i funkciju u tom modulu za  
 #dohvaćanje konekcije i baze, i ("./put do baze/Users.db- je ime baze")
 root = tk.Tk()
 root.title("Upravljanje korisnicima")
