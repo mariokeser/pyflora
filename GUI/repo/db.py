@@ -175,8 +175,7 @@ def delete_herb(conn, id):
         return True 
     except sqlite3.Error as err:
         print(f"ERROR: {err}")
-    finally:
-        cursor.close()
+    
 
 
 
@@ -187,12 +186,15 @@ def get_herb(conn, id):
         cursor = conn.cursor()
         cursor.execute(select_herb_query, (id,))
         record = cursor.fetchone()
+        
         if record != None:
-            return(record[1],record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9]) 
+            return (record[1],record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9]) 
         else:
             cursor.close()
     except sqlite3.Error as err: 
         print(f"ERROR: {err}")
+    
+    
 
     
          

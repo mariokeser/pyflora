@@ -223,7 +223,7 @@ def store_addnew_herb():
     input_herb_height.set("")
     input_herb_width.set("")
 
-    herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, herb_image = db.get_herb(conn, 4) 
+    herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, herb_image = db.get_herb(conn, 5) 
     herb_name_get.set(herb_name)
     herb_moisture_get.set(soil_moisture)
     herb_air_temp_get.set(air_temperature)
@@ -453,17 +453,16 @@ def main_window(event):
 
 
 #window sa detaljima o konkretnoj biljci
-#def deletes_herb():
- #   db.delete_herb(conn, 3)
+
 def delete_button_herb():
     answer = askyesno(title="confirmation", message="Are you sure that you want to proceed with delete action?")
     if answer:
-        db.delete_herb(conn, 3)
-        
+        db.delete_herb(conn, 4) 
     else:
        return
 def update_herbs():
     update_herb("<Button-1>")
+    
 def details_herb(event):
     global tp, herb_name_get, bigimg_herb_photo, herb_moisture_get, herb_air_temp_get, herb_luminosity_get, herb_ph_get
     tp.withdraw()
