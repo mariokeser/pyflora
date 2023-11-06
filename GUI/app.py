@@ -51,7 +51,12 @@ def login_window():
 
 # za pohranu/odustanak od dodavanja novih pycontainera i povrat na window sa listom pycontainera-main window
 def store_addnew_pycontainer():
-    db.add_containers(conn=conn, name=input_container_name.get())
+    def remove(string):
+            return string.replace(" ", "") 
+    if remove(input_container_name.get()) == "":
+        messagebox.showerror("Error!", "When creating pycontainer - name is mandatory!")
+        return
+    db.add_containers(conn=conn, name=input_container_name.get(),herb_id =id_herb)
     input_container_name.set("")
     main_window("<Button-1>")
 def cancel_addnew_container():
@@ -60,6 +65,7 @@ empty_pycontainer = StringVar(value=" ")
 input_container_name = StringVar(value=" ")
 #input_container_4 = StringVar(value=" ")
 #input_container_5 = StringVar(value=" ")
+id_herb = None
 def addnew_pycontainer(event):
     global tp
     tp.withdraw()
@@ -87,10 +93,19 @@ def addnew_pycontainer(event):
     #Entry(frame_2, textvariable=input_container_4,  background="white", fg="black", width=50).grid(row=2, column=1, sticky="w", padx=20)
     #Label(frame_2, text="Pycontainer name", fg="red").grid(row=3, column=1, sticky="w", padx=20)
     #Entry(frame_2, textvariable=input_container_5,  background="white", fg="black", width=50).grid(row=4, column=1, padx=20, sticky="w")
-    option_list = ["Herb 1", "Herb 2", "Herb 3", "Herb 4"]
+    all_herbs = db.get_all_herbs(conn=conn)
+    option_list = []
+    for herb in all_herbs:
+        option_list.append(herb["name"])
     value_inside = StringVar(frame_2)
     value_inside.set("Select a herb")
-    herb_menu = OptionMenu(frame_2, value_inside, *option_list)
+    def get_herb_name(*args):
+        global id_herb
+        for herb in all_herbs:
+            if herb["name"] == value_inside.get():
+                id_herb = herb["id"]
+        return id_herb
+    herb_menu = OptionMenu(frame_2, value_inside, *option_list, command=get_herb_name) 
     herb_menu.config(width=46)
     herb_menu.grid(row=2, column=1, sticky="w", padx=22)
     store_button =Button(frame_2, text="STORE", command=store_addnew_pycontainer, height=1, width=12)

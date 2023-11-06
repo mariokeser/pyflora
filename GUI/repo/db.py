@@ -58,6 +58,7 @@ VALUES (?,?,?,?,?,?,?,?,?);"""
 
 
 select_herb_query = """SELECT * FROM Herbs WHERE id = ?;"""
+select_all_herbs_query = """SELECT * FROM Herbs"""
 delete_herb_query = """DELETE FROM Herbs WHERE id = ?;"""
 
 
@@ -177,9 +178,6 @@ def delete_herb(conn, id):
         print(f"ERROR: {err}")
     
 
-
-
-
 # za dohvaćanje herba u varijable i image
 def get_herb(conn, id):
     try:
@@ -193,12 +191,27 @@ def get_herb(conn, id):
             cursor.close()
     except sqlite3.Error as err: 
         print(f"ERROR: {err}")
-    
-    
+
+def get_all_herbs(conn):
+    try:
+        cursor = conn.cursor()
+        cursor.execute(select_all_herbs_query)
+        record = cursor.fetchall()
+        result = []
+        
+        if record != None:
+            for item in record:
+                result.append({"id": item[0], "name": item[1]})
+            return result
+
+               
+        else:
+            cursor.close()
+    except sqlite3.Error as err: 
+        print(f"ERROR: {err}")
+   
 
     
-         
-
 # za promjenu podataka usera, stari user stavljen u old username
 def update(conn, name, lastname,password, username):
     try:
