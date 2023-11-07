@@ -31,7 +31,8 @@ WHERE username = ?;"""
 create_containers_query = """CREATE TABLE IF NOT EXISTS Containers(
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    herb_id INTEGER
+    herb_id INTEGER,
+    FOREIGN KEY (herb_id) REFERENCES Herbs(id)
 );"""
 
 add_new_containers_query = """INSERT INTO Containers (name, herb_id) VALUES (?, ?);"""
@@ -60,6 +61,8 @@ VALUES (?,?,?,?,?,?,?,?,?);"""
 select_herb_query = """SELECT * FROM Herbs WHERE id = ?;"""
 select_all_herbs_query = """SELECT * FROM Herbs"""
 delete_herb_query = """DELETE FROM Herbs WHERE id = ?;"""
+update_herb_query = """UPDATE Herbs SET name = ?, soil_moisture = ?, luminosity = ?, air_temperature = ?, ph_value = ?, features = ?, herb_height = ?, herb_width = ?, image = ?
+WHERE id = ?;"""
 
 
 
@@ -213,7 +216,7 @@ def get_all_herbs(conn):
 
     
 # za promjenu podataka usera, stari user stavljen u old username
-def update(conn, name, lastname,password, username):
+def update_user(conn, name, lastname,password, username):
     try:
         cursor = conn.cursor()
         
@@ -223,7 +226,25 @@ def update(conn, name, lastname,password, username):
         cursor.execute(update_query_profile, (name, lastname, password, username))
    
         conn.commit()  
-        return True
+        #return True
+       
+    except sqlite3.Error as err: 
+        print(f"ERROR: {err}")
+        
+    finally:
+          cursor.close() 
+#za promjenu podataka herba
+def update_herb(conn, name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image):
+    try:
+        cursor = conn.cursor()
+        
+        # if get_herb(conn, username) != None:
+        #     return False
+
+        cursor.execute(update_herb_query, (name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image))
+   
+        conn.commit()  
+        #return True
        
     except sqlite3.Error as err: 
         print(f"ERROR: {err}")
