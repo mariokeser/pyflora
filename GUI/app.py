@@ -196,10 +196,10 @@ update_herb_photo = StringVar(value="")
 
 # za dohvaćanje/select image iz get funkcije
 def get_images(): # tu sam stao zbog errora update herb, kad ne izaberem image preko funkcije već ostavim koji je
-   global bigimg_herb_photo, smallimg_herb_photo
-   if herb_image == "":
-       return
-   else:
+     global bigimg_herb_photo, smallimg_herb_photo
+     if herb_image == "":
+         return
+     else:
         big_img = Image.open(herb_image).resize((303, 303))
         bigimg_herb_photo = ImageTk.PhotoImage(big_img)
         small_img = Image.open(herb_image).resize((100, 140)) 
@@ -219,13 +219,16 @@ def add_herb_photo():
         global input_herb_photo
         input_herb_photo = filedialog.askopenfilename(title="Select herb image")
         set_thumbnail()
-# za select image u addnew herb
+# za dodavanje image thumbnaila  u update herb
 def get_thumbnail():
     global  thumbnail_photo, thumbnail_herb_photo
-    img_thumb = Image.open(herb_image).resize((300,300))
-    img_thumb.thumbnail((80,200))
-    thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
-    thumbnail_photo.config(image=thumbnail_herb_photo)
+    if herb_image == "":
+        return
+    else:
+        img_thumb = Image.open(herb_image).resize((300,300))
+        img_thumb.thumbnail((80,200))
+        thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
+        thumbnail_photo.config(image=thumbnail_herb_photo)
 
         
 def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je samo zbog isprobavanja drugih funkcija
@@ -340,7 +343,7 @@ edit_herb_height = StringVar(value=" ")
 edit_herb_width = StringVar(value=" ")
 
 def update_herb(event):
-    global tp, thumbnail_photo 
+    global tp, thumbnail_photo
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -378,7 +381,7 @@ def update_herb(event):
     Button(frame_2,text="Change herb image", fg="green", command=add_herb_photo).grid(row=9, column=0, sticky="w",padx=50, pady=5)
     thumbnail_photo = Label(frame_2)
     thumbnail_photo.grid(row=9, column=0, sticky="e", padx=50)
-    get_thumbnail() # za dodavanje herb_image id db.get_herb(conn, id), line 241
+    #get_thumbnail() # za dodavanje herb_image id db.get_herb(conn, id), line 241
     Entry(frame_2, textvariable=edit_herb_height,  background="white", fg="black", width=50).grid(row=8, column=0, pady=5, padx=50)
     Label(frame_2, text="Change air temperature", fg="red").grid(row=1, column=1, sticky="w", padx=20)
     Entry(frame_2, textvariable=edit_air_temperature,  background="white", fg="black", width=50).grid(row=2, column=1, sticky="w", padx=20)
