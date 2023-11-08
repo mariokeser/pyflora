@@ -173,7 +173,9 @@ input_ph_value = StringVar(value=" ")
 input_features = StringVar(value=" ")
 input_herb_height = StringVar(value=" ")
 input_herb_width = StringVar(value=" ")
-input_herb_photo = StringVar(value=" ") #"./pyflora/GUI/images/herb_photo.jpg"
+input_herb_photo = StringVar() #"./pyflora/GUI/images/herb_photo.jpg"
+path = "/pyflora/GUI/images/herb_photo.jpg"
+
 #varijable za get funkciju
 
 #varijable za input iz get funkcije u entrye, labele i canvas
@@ -185,7 +187,7 @@ var_herb_features = StringVar(value="")
 var_herb_height = StringVar(value="")
 var_herb_width = StringVar(value="")
 var_herb_luminosity = StringVar(value="")
-herb_image=StringVar(value="")
+herb_image=StringVar()
 
 # za select/get images
 bigimg_herb_photo = None 
@@ -216,8 +218,9 @@ def set_thumbnail():
         thumbnail_photo.config(image=thumbnail_herb_photo)
 
 def add_herb_photo():
-        global input_herb_photo
-        input_herb_photo = filedialog.askopenfilename(title="Select herb image")
+        global input_herb_photo, path
+        path = filedialog.askopenfilename(title="Select herb image")
+        input_herb_photo.set(path)
         set_thumbnail()
 # za dodavanje image thumbnaila  u update herb
 def get_thumbnail():
@@ -233,8 +236,8 @@ def get_thumbnail():
         
 def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je samo zbog isprobavanja drugih funkcija
     global herb_image #herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width
-    #db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
-       #    ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=input_herb_photo)
+    db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
+          ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=input_herb_photo.get())
     input_herb_name.set("")
     input_soil_moisture.set("")
     input_luminosity.set("")
@@ -244,7 +247,7 @@ def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je
     input_herb_height.set("")
     input_herb_width.set("")
 
-    herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, herb_image = db.get_herb(conn, 5) 
+    herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, herb_image = db.get_herb(conn, 7) 
     var_herb_name.set(herb_name)
     var_herb_moisture.set(soil_moisture)
     var_herb_air_temp.set(air_temperature)
@@ -305,12 +308,12 @@ def addnew_herb(event):
     cancel_button =Button(frame_2, text="CANCEL", command=cancel_addnew_herb, height=1, width=12)
     cancel_button.grid(row=11, column=1, sticky="e", pady=180, padx=20)
     return event
-update_herb_photo_1 = StringVar()
+update_herb_photo = StringVar()
 update_herb_photo_2 = StringVar()
 # funkcija za update herb podatke
 def edit_herb():
     db.update_herb(conn, var_herb_name.get(), var_herb_moisture.get(), var_herb_luminosity.get(), var_herb_air_temp.get(), var_herb_ph.get(), var_herb_features.get(),
-                   var_herb_height.get(), var_herb_width.get(), update_herb_photo_2.get())
+                   var_herb_height.get(), var_herb_width.get(), herb_image.get())
 #za gumb update/ažuriranje podataka o postojećoj/dodanoj biljci
 def store_update_herb():
     global herb_image, update_herb_photo_2
@@ -322,9 +325,9 @@ def store_update_herb():
     var_herb_features.set(edit_features.get())
     var_herb_height.set(edit_herb_height.get())
     var_herb_width.set(edit_herb_width.get())
-    herb_image = input_herb_photo # input_herb_photo iz update herb koji sam dobio preko funkcije add_herb_photo na Buttonu Change herb image, herb_image ide u get_images() ispod
-    update_herb_photo_1.set(input_herb_photo)
-    update_herb_photo_2.set(update_herb_photo_1.get())
+    herb_image.set(input_herb_photo.get())# input_herb_photo iz update herb koji sam dobio preko funkcije add_herb_photo na Buttonu Change herb image, herb_image ide u get_images() ispod
+    #update_herb_photo.set(herb_image.get())
+    #update_herb_photo_2.set(update_herb_photo_1.get())
     get_images()
     edit_herb()
     
