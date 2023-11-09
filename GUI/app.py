@@ -293,8 +293,8 @@ def addnew_herb(event):
 
 #za gumb update/ažuriranje podataka o postojećoj/dodanoj biljci
 def store_update_herb():
+    global herb_image, input_herb_photo
     def edit_herb():
-        global herb_image, input_herb_photo
         #herb_image.set(input_herb_photo)
         db.update_herb(conn, var_herb_name.get(), var_herb_moisture.get(), var_herb_luminosity.get(), var_herb_air_temp.get(), var_herb_ph.get(), var_herb_features.get(),
                    var_herb_height.get(), var_herb_width.get(), herb_image.get())
