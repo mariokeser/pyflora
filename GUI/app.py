@@ -179,6 +179,7 @@ input_herb_photo = "./pyflora/GUI/images/herb_photo.jpg"
 #varijable za get funkciju
 
 #varijable za input iz get funkcije u entrye, labele i canvas
+var_herb_id = StringVar(value="")
 var_herb_name = StringVar(value="")
 var_herb_moisture = StringVar(value="")
 var_herb_air_temp = StringVar(value="")
@@ -215,8 +216,8 @@ def add_herb_photo():
         
 def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je samo zbog isprobavanja drugih funkcija
     global herb_image, input_herb_photo
-    db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
-          ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=herb_image.get())
+    #db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
+       #   ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=herb_image.get())
     input_herb_name.set("")
     input_soil_moisture.set("")
     input_luminosity.set("")
@@ -226,7 +227,8 @@ def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je
     input_herb_height.set("")
     input_herb_width.set("")
 
-    herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, 8) 
+    herb_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, 8) 
+    var_herb_id.set(herb_id)
     var_herb_name.set(herb_name)
     var_herb_moisture.set(soil_moisture)
     var_herb_air_temp.set(air_temperature)
@@ -297,7 +299,7 @@ def store_update_herb():
     def edit_herb():
         #herb_image.set(input_herb_photo)
         db.update_herb(conn, var_herb_name.get(), var_herb_moisture.get(), var_herb_luminosity.get(), var_herb_air_temp.get(), var_herb_ph.get(), var_herb_features.get(),
-                   var_herb_height.get(), var_herb_width.get(), herb_image.get())
+                   var_herb_height.get(), var_herb_width.get(), herb_image.get(), var_herb_id.get())
     var_herb_name.set(edit_herb_name.get())
     var_herb_moisture.set(edit_soil_moisture.get())
     var_herb_luminosity.set(edit_luminosity.get())
@@ -544,23 +546,30 @@ def herbs_window(event):
     Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).grid(row=0, column=2, sticky=E, padx=202, ipady=1)
     
     Button(tp, text = "SYNC", fg = "green", width=12).grid(row=1, column=0, sticky=E, padx=204,pady=20, ipady=3)
+
+    get_all_herbs = db.get_all_herbs(conn=conn)
+
     frame_2 = Label(tp)
     frame_2.grid(row=2, column=0, pady=50)
-    canvas = Canvas(frame_2, width= 260, height= 125, bg="SpringGreen2")
-    canvas.grid(row=0, column=0, sticky=E)
-    canvas.create_text(100, 20, text=var_herb_name.get(), fill="black",anchor="w", font=('Helvetica 20 bold'))
-    canvas.create_text(140, 50, text = "Features",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
-    canvas.create_text(140, 60, text = var_herb_features.get(),fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
-    canvas.create_text(133, 70, text = "Height",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
-    canvas.create_text(140, 80, text = var_herb_height.get(),fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') )
-    canvas.create_text(133, 90, text="Width", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
-    canvas.create_text(140, 100, text = var_herb_width.get(),fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') )
-
-  
-    canvas.create_image((0,0), anchor=NW, image=smallimg_herb_photo)
-    canvas.bind("<Button-1>", details_herb)
+    for index, herb in enumerate(get_all_herbs):
+        if index % 2 == 1:
+            column_count = 1
+        else:
+            column_count = 0
+        canvas = Canvas(frame_2, width= 260, height= 125, bg="SpringGreen2")
+        canvas.grid(row=index, column=column_count, sticky=E)
+        canvas.create_text(100, 20, text = herb["name"], fill="black",anchor="w", font=('Helvetica 20 bold'))
+        canvas.create_text(140, 50, text = "Features",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
+        canvas.create_text(140, 60, text = var_herb_features.get(),fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
+        canvas.create_text(133, 70, text = "Height",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
+        canvas.create_text(140, 80, text = var_herb_height.get(),fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') )
+        canvas.create_text(133, 90, text = "Width", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
+        canvas.create_text(140, 100, text = var_herb_width.get(),fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') )
+        canvas.create_image((0,0), anchor=NW, image=smallimg_herb_photo)
+        canvas.bind("<Button-1>", details_herb)
+    
     canvas = Canvas(frame_2, width=260, height=125, bg="SpringGreen2")
-    canvas.grid(row=0, column=1, sticky=W)
+    canvas.grid(row=len(get_all_herbs), column=1, sticky=W)
     canvas.create_text(130, 45, text="+", fill="black", anchor=CENTER,font=("Helvetica 30 bold"))
     canvas.create_text(130, 85, text="Add new herb", fill="black", anchor=CENTER,font=("Helvetica 15 bold"))
     canvas.bind("<Button-1>", addnew_herb)

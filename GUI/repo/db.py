@@ -189,7 +189,7 @@ def get_herb(conn, id):
         record = cursor.fetchone()
         
         if record != None:
-            return (record[1],record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9]) 
+            return (record[0], record[1],record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9]) 
         else:
             cursor.close()
     except sqlite3.Error as err: 
@@ -234,14 +234,14 @@ def update_user(conn, name, lastname,password, username):
     finally:
           cursor.close() 
 #za promjenu podataka herba
-def update_herb(conn, name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image):
+def update_herb(conn, name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image, herb_id):
     try:
         cursor = conn.cursor()
         
         # if get_herb(conn, username) != None:
         #     return False
 
-        cursor.execute(update_herb_query, (name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image))
+        cursor.execute(update_herb_query, (name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image, herb_id))
    
         conn.commit()  
         #return True
