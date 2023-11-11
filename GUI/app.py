@@ -535,10 +535,10 @@ def details_herb(event):
     Label(frame_2, textvariable=var_herb_ph, fg="green").grid(row=4, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_air_temp, fg="green").grid(row=5, column=0, sticky=W, padx=200)
     return event
-herb = StringVar(value="")
+herbs = StringVar(value="")
 #window sa listom dohvaćenih/postavljenih biljaka
 def herbs_window(event):
-    global tp, smallimg_herb_photo, herb
+    global tp, smallimg_herb_photo,  small_img
     tp.withdraw()
     tp=Toplevel()
     width=tp.winfo_screenwidth()
@@ -560,20 +560,13 @@ def herbs_window(event):
     get_all_herbs = db.get_all_herbs(conn=conn)
     j = 0
     index = 0
-    
+
     for index, herb in enumerate(get_all_herbs):
-        global smallimg_herb_photo, small_img
         if j < 1:
             j += 1
-            small_img = Image.open(herb["image"]).resize((100, 140)) 
-            smallimg_herb_photo = ImageTk.PhotoImage(small_img)
         else:
            j = 0
            index +=1
-           small_img = Image.open(herb["image"]).resize((100, 140)) 
-           smallimg_herb_photo = ImageTk.PhotoImage(small_img)
-        
-        
         canvas = Canvas(frame_2, width= 260, height= 125, bg="SpringGreen2")
         canvas.grid(row=index, column=j, sticky=E)
         canvas.create_text(100, 20, text =herb["name"], fill="black",anchor="w", font=('Helvetica 20 bold')) # var_herb_name.get()
@@ -583,6 +576,10 @@ def herbs_window(event):
         canvas.create_text(140, 80, text =herb["herb_height"],fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') ) #var_herb_height.get()
         canvas.create_text(133, 90, text = "Width", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
         canvas.create_text(140, 100, text =herb["herb_width"],fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') ) #var_herb_width.get()
+    global herbs
+    for index, herbs in enumerate(get_all_herbs):
+        small_img = Image.open(herbs["image"]).resize((100, 140)) 
+        smallimg_herb_photo=ImageTk.PhotoImage(small_img)
         canvas.create_image((0,0), anchor=NW, image=smallimg_herb_photo) #smallimg_herb_photo
         canvas.bind("<Button-1>", details_herb)
      
