@@ -560,7 +560,7 @@ def herbs_window(event):
     get_all_herbs = db.get_all_herbs(conn=conn)
     j = 0
     index = 0
-
+    herbs = []
     for index, herb in enumerate(get_all_herbs):
         if j < 1:
             j += 1
@@ -576,10 +576,8 @@ def herbs_window(event):
         canvas.create_text(140, 80, text =herb["herb_height"],fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') ) #var_herb_height.get()
         canvas.create_text(133, 90, text = "Width", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
         canvas.create_text(140, 100, text =herb["herb_width"],fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') ) #var_herb_width.get()
-    global herbs
-    for index, herbs in enumerate(get_all_herbs):
-        small_img = Image.open(herbs["image"]).resize((100, 140)) 
-        smallimg_herb_photo=ImageTk.PhotoImage(small_img)
+        #small_img = Image.open(herbs["image"]).resize((100, 140)) 
+        smallimg_herb_photo=ImageTk.PhotoImage(Image.open(herb["image"]).resize((100, 140)))
         canvas.create_image((0,0), anchor=NW, image=smallimg_herb_photo) #smallimg_herb_photo
         canvas.bind("<Button-1>", details_herb)
      
