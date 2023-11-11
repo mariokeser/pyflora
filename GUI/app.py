@@ -203,21 +203,28 @@ def get_images(): # tu sam stao zbog errora update herb, kad ne izaberem image p
         bigimg_herb_photo = ImageTk.PhotoImage(big_img)
         small_img = Image.open(input_herb_photo).resize((100, 140)) 
         smallimg_herb_photo = ImageTk.PhotoImage(small_img)
-        img_thumb = Image.open(input_herb_photo).resize((300,300))
-        img_thumb.thumbnail((80,200))
-        thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
-        thumbnail_photo.config(image=thumbnail_herb_photo)
+        #img_thumb = Image.open(input_herb_photo).resize((300,300))
+        #img_thumb.thumbnail((80,200))
+        #thumbnail_herb_photo = ImageTk.PhotoImage(img_thumb)
+        #thumbnail_photo.config(image=thumbnail_herb_photo)
 def add_herb_photo():
         global input_herb_photo, herb_image
         input_herb_photo = filedialog.askopenfilename(title="Select herb image")
         herb_image.set(input_herb_photo)
         get_images()   
 
+herbs = ""
+def set_herb_images(herb):
+    global smallimg_herb_photo
+    for index, herb in enumerate(get_all_herbs):
+        small_img = Image.open(herb).resize((100, 140)) 
+        smallimg_herb_photo = ImageTk.PhotoImage(small_img)
+
         
 def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je samo zbog isprobavanja drugih funkcija
     global herb_image, input_herb_photo
     #db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
-       #   ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=herb_image.get())
+       #  ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=herb_image.get())
     input_herb_name.set("")
     input_soil_moisture.set("")
     input_luminosity.set("")
@@ -226,19 +233,21 @@ def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je
     input_features.set("")
     input_herb_height.set("")
     input_herb_width.set("")
+    #input_herb_photo.set("")
 
-    herb_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, 8) 
-    var_herb_id.set(herb_id)
-    var_herb_name.set(herb_name)
-    var_herb_moisture.set(soil_moisture)
-    var_herb_air_temp.set(air_temperature)
-    var_herb_ph.set(ph_value)
-    var_herb_features.set(features)
-    var_herb_height.set(herb_height)
-    var_herb_width.set(herb_width)
-    var_herb_luminosity.set(luminosity)
-    input_herb_photo = image
+   #herb_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, herb_id) 
+    #var_herb_id.set(herb_id)
+    #var_herb_name.set(herb_name)
+    #var_herb_moisture.set(soil_moisture)
+    #var_herb_air_temp.set(air_temperature)
+    #var_herb_ph.set(ph_value)
+    #var_herb_features.set(features)
+    #var_herb_height.set(herb_height)
+    #var_herb_width.set(herb_width)
+    #var_herb_luminosity.set(luminosity)
+    #input_herb_photo = image
     get_images()
+    
     herbs_window("<Button-1>")
 
 def cancel_addnew_herb():
@@ -495,7 +504,7 @@ def update_herbs():
     update_herb("<Button-1>")
     
 def details_herb(event):
-    global tp, bigimg_herb_photo
+    global tp, bigimg_herb_photo, thumbnail_photo
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -526,10 +535,10 @@ def details_herb(event):
     Label(frame_2, textvariable=var_herb_ph, fg="green").grid(row=4, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_air_temp, fg="green").grid(row=5, column=0, sticky=W, padx=200)
     return event
-
+herb = StringVar(value="")
 #window sa listom dohvaćenih/postavljenih biljaka
 def herbs_window(event):
-    global tp, smallimg_herb_photo
+    global tp, smallimg_herb_photo, herb
     tp.withdraw()
     tp=Toplevel()
     width=tp.winfo_screenwidth()
@@ -544,32 +553,42 @@ def herbs_window(event):
     l2=Label(frame, text="Herbs", font=("Arial", 23), fg="green")
     l2.grid(row=0, column=1, sticky=W, padx=133)
     Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).grid(row=0, column=2, sticky=E, padx=202, ipady=1)
-    
     Button(tp, text = "SYNC", fg = "green", width=12).grid(row=1, column=0, sticky=E, padx=204,pady=20, ipady=3)
-
-    get_all_herbs = db.get_all_herbs(conn=conn)
 
     frame_2 = Label(tp)
     frame_2.grid(row=2, column=0, pady=50)
+    get_all_herbs = db.get_all_herbs(conn=conn)
+    j = 0
+    index = 0
+    
     for index, herb in enumerate(get_all_herbs):
-        if index % 2 == 1:
-            column_count = 1
+        global smallimg_herb_photo, small_img
+        if j < 1:
+            j += 1
+            small_img = Image.open(herb["image"]).resize((100, 140)) 
+            smallimg_herb_photo = ImageTk.PhotoImage(small_img)
         else:
-            column_count = 0
+           j = 0
+           index +=1
+           small_img = Image.open(herb["image"]).resize((100, 140)) 
+           smallimg_herb_photo = ImageTk.PhotoImage(small_img)
+        
+        
         canvas = Canvas(frame_2, width= 260, height= 125, bg="SpringGreen2")
-        canvas.grid(row=index, column=column_count, sticky=E)
-        canvas.create_text(100, 20, text = herb["name"], fill="black",anchor="w", font=('Helvetica 20 bold'))
+        canvas.grid(row=index, column=j, sticky=E)
+        canvas.create_text(100, 20, text =herb["name"], fill="black",anchor="w", font=('Helvetica 20 bold')) # var_herb_name.get()
         canvas.create_text(140, 50, text = "Features",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
-        canvas.create_text(140, 60, text = var_herb_features.get(),fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
+        canvas.create_text(140, 60, text = herb["features"],fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') ) #var_herb_features.get()
         canvas.create_text(133, 70, text = "Height",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
-        canvas.create_text(140, 80, text = var_herb_height.get(),fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') )
+        canvas.create_text(140, 80, text =herb["herb_height"],fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') ) #var_herb_height.get()
         canvas.create_text(133, 90, text = "Width", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
-        canvas.create_text(140, 100, text = var_herb_width.get(),fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') )
-        canvas.create_image((0,0), anchor=NW, image=smallimg_herb_photo)
+        canvas.create_text(140, 100, text =herb["herb_width"],fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') ) #var_herb_width.get()
+        canvas.create_image((0,0), anchor=NW, image=smallimg_herb_photo) #smallimg_herb_photo
         canvas.bind("<Button-1>", details_herb)
+     
     
     canvas = Canvas(frame_2, width=260, height=125, bg="SpringGreen2")
-    canvas.grid(row=len(get_all_herbs), column=1, sticky=W)
+    canvas.grid(row=0, column=0, sticky=W)   #row=len(get_all_herbs), column=1
     canvas.create_text(130, 45, text="+", fill="black", anchor=CENTER,font=("Helvetica 30 bold"))
     canvas.create_text(130, 85, text="Add new herb", fill="black", anchor=CENTER,font=("Helvetica 15 bold"))
     canvas.bind("<Button-1>", addnew_herb)

@@ -50,7 +50,7 @@ create_herbs_query = """CREATE TABLE IF NOT EXISTS Herbs(
     features TEXT NOT NULL,
     herb_height INTEGER NOT NULL,
     herb_width INTEGER NOT NULL,
-    image VARCHAR(100) NOT NULL
+    image TEXT NOT NULL
 );"""
 
 add_new_herbs_query = """INSERT INTO Herbs (name, soil_moisture, luminosity, air_temperature,ph_value,
@@ -194,7 +194,16 @@ def get_herb(conn, id):
             cursor.close()
     except sqlite3.Error as err: 
         print(f"ERROR: {err}")
-
+"""
+soil_moisture FLOAT NOT NULL,
+    luminosity FLOAT NOT NULL,
+    air_temperature FLOAT NOT NULL,
+    ph_value FLOAT NOT NULL,
+    features TEXT NOT NULL,
+    herb_height INTEGER NOT NULL,
+    herb_width INTEGER NOT NULL,
+    image TEXT NOT NULL
+    """
 def get_all_herbs(conn):
     try:
         cursor = conn.cursor()
@@ -204,7 +213,8 @@ def get_all_herbs(conn):
         
         if record != None:
             for item in record:
-                result.append({"id": item[0], "name": item[1]})
+                result.append({"id": item[0], "name": item[1], "soil_moisture": item[2], "luminosity": item[3], "air_temperature": item[4], "ph_value": item[5],
+                               "features": item[6], "herb_height": item[7], "herb_width": item[8], "image": item[9]})
             return result
 
                
