@@ -3,10 +3,13 @@ from tkinter import Tk, Toplevel, Label, LabelFrame,Button, Entry, Frame, messag
 from tkinter.messagebox import askyesno
 from PIL import Image, ImageTk 
 from repo import db
+
 #konekcija na bazu podataka
 conn = db.get_connection("./pyflora/GUI/data/Pyflora.db")
 #root GUI-a
 root = Tk()
+root.grid_rowconfigure(0, weight=1)
+root.grid_columnconfigure(0, weight=1)
 
 #prvi window za login
 def login_window(): 
@@ -212,14 +215,14 @@ def add_herb_photo():
         input_herb_photo = filedialog.askopenfilename(title="Select herb image")
         herb_image.set(input_herb_photo)
         get_images()   
-
+"""
 herbs = ""
 def set_herb_images(herb):
     global smallimg_herb_photo
     for index, herb in enumerate(get_all_herbs):
         small_img = Image.open(herb).resize((100, 140)) 
         smallimg_herb_photo = ImageTk.PhotoImage(small_img)
-
+"""
         
 def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je samo zbog isprobavanja drugih funkcija
     global herb_image, input_herb_photo
@@ -535,16 +538,18 @@ def details_herb(event):
     Label(frame_2, textvariable=var_herb_ph, fg="green").grid(row=4, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_air_temp, fg="green").grid(row=5, column=0, sticky=W, padx=200)
     return event
-herbs = StringVar(value="")
+
 #window sa listom dohvaćenih/postavljenih biljaka
 def herbs_window(event):
-    global tp, smallimg_herb_photo,  small_img
+    global tp, smallimg_herb_photo
     tp.withdraw()
     tp=Toplevel()
     width=tp.winfo_screenwidth()
     height=tp.winfo_screenheight()
     tp.geometry("%dx%d" %(width, height))
     tp.title("")
+    tp.grid_rowconfigure(0, weight=1)
+    tp.grid_columnconfigure(0, weight=1)
     frame=LabelFrame(tp)
     frame.grid(row=0, column=0, ipady=10, sticky=W)
     l1=Label(frame, text="PyFlora Container", font=("Arial", 23), fg="green")
@@ -554,21 +559,38 @@ def herbs_window(event):
     l2.grid(row=0, column=1, sticky=W, padx=133)
     Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).grid(row=0, column=2, sticky=E, padx=202, ipady=1)
     Button(tp, text = "SYNC", fg = "green", width=12).grid(row=1, column=0, sticky=E, padx=204,pady=20, ipady=3)
+    frame_2 = Frame(tp)
+    #frame_2.config(width=tp.winfo_screenwidth(), height=tp.winfo_screenheight())
+    frame_2.grid(row=2,column=0,columnspan=3 ) #sticky=NSEW
+    frame_2.grid_rowconfigure(0, weight=1)
+    frame_2.grid_columnconfigure(1, weight=1)
+    
+    my_canvas = Canvas(frame_2)
+    my_canvas.grid(row=0, column=0, sticky="nwse") #column=2
+    #my_canvas.grid_rowconfigure(0, weight=1)
+    #my_canvas.grid_columnconfigure(0, weight=1)
+    my_scrollbar = Scrollbar(frame_2, orient=VERTICAL, command=my_canvas.yview)
+    my_scrollbar.grid(row=0, column=1, sticky="ns")
+    my_canvas.configure(yscrollcommand=my_scrollbar.set)
+    my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion= my_canvas.bbox("all")))
+    second_frame = Frame(my_canvas)
+    my_canvas.create_window((0,0), window=second_frame, anchor="nw")
 
-    frame_2 = Label(tp)
-    frame_2.grid(row=2, column=0, pady=50)
     get_all_herbs = db.get_all_herbs(conn=conn)
+    images = []
+    #row= 0
     j = 0
-    index = 0
-    herbs = []
+    #index = 0
     for index, herb in enumerate(get_all_herbs):
         if j < 1:
             j += 1
         else:
            j = 0
-           index +=1
-        canvas = Canvas(frame_2, width= 260, height= 125, bg="SpringGreen2")
-        canvas.grid(row=index, column=j, sticky=E)
+           index = index +1
+        canvas = Canvas(second_frame, width= 260, height= 125, bg="SpringGreen2")
+        canvas.grid(row=index, column=j, sticky=NSEW)
+        #canvas.grid_rowconfigure(0, weight=1)
+        #canvas.grid_columnconfigure(0, weight=1)
         canvas.create_text(100, 20, text =herb["name"], fill="black",anchor="w", font=('Helvetica 20 bold')) # var_herb_name.get()
         canvas.create_text(140, 50, text = "Features",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
         canvas.create_text(140, 60, text = herb["features"],fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') ) #var_herb_features.get()
@@ -576,14 +598,18 @@ def herbs_window(event):
         canvas.create_text(140, 80, text =herb["herb_height"],fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') ) #var_herb_height.get()
         canvas.create_text(133, 90, text = "Width", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
         canvas.create_text(140, 100, text =herb["herb_width"],fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') ) #var_herb_width.get()
-        #small_img = Image.open(herbs["image"]).resize((100, 140)) 
-        smallimg_herb_photo=ImageTk.PhotoImage(Image.open(herb["image"]).resize((100, 140)))
-        canvas.create_image((0,0), anchor=NW, image=smallimg_herb_photo) #smallimg_herb_photo
+        small_img = Image.open(herb["image"]).resize((100, 140)) 
+        smallimg_herb_photo=ImageTk.PhotoImage(small_img)
+        images.append(ImageTk.PhotoImage(small_img))
+        #print(images)
+        canvas.create_image((0,0), anchor=NW, image=smallimg_herb_photo)
+        #index = index + 1
         canvas.bind("<Button-1>", details_herb)
-     
     
-    canvas = Canvas(frame_2, width=260, height=125, bg="SpringGreen2")
-    canvas.grid(row=0, column=0, sticky=W)   #row=len(get_all_herbs), column=1
+    canvas = Canvas(second_frame, width=260, height=125, bg="SpringGreen2")
+    canvas.grid(row=0, column=0, sticky=NSEW)   #row=len(get_all_herbs), column=1
+    #canvas.grid_rowconfigure(0, weight=1)
+    #canvas.grid_columnconfigure(0, weight=1)
     canvas.create_text(130, 45, text="+", fill="black", anchor=CENTER,font=("Helvetica 30 bold"))
     canvas.create_text(130, 85, text="Add new herb", fill="black", anchor=CENTER,font=("Helvetica 15 bold"))
     canvas.bind("<Button-1>", addnew_herb)
@@ -725,6 +751,7 @@ def my_profile():
     
 if __name__ == '__main__':
     login_window()
+
 
 #omogućava da se GUI vidi
 root.mainloop()
