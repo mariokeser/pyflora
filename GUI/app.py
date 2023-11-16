@@ -206,6 +206,7 @@ herb_image = StringVar(value="")
 # za select/get images
 bigimg_herb_photo = None 
 smallimg_herb_photo = None 
+images = []
 # za dohvaćanje/select image iz get funkcije
 def get_images(): # tu sam stao zbog errora update herb, kad ne izaberem image preko funkcije već ostavim koji je
      global bigimg_herb_photo, smallimg_herb_photo, thumbnail_photo, thumbnail_herb_photo
@@ -578,7 +579,7 @@ def details_herb(event):
 
 #window sa listom dohvaćenih/postavljenih biljaka
 def herbs_window(event):
-    global tp, smallimg_herb_photo
+    global tp, smallimg_herb_photo, images
     tp.withdraw()
     tp=Toplevel()
     width=tp.winfo_screenwidth()
@@ -615,10 +616,8 @@ def herbs_window(event):
     my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion= my_canvas.bbox("all")))
     second_frame = Frame(my_canvas)
     my_canvas.create_window((0,0), window=second_frame, anchor="nw")
-
     get_all_herbs = db.get_all_herbs(conn=conn)
-    images = []
-    #row= 0
+    i = 0
     j = 0
     #index = 0
     for index, herb in enumerate(get_all_herbs):
@@ -626,9 +625,10 @@ def herbs_window(event):
             j += 1
         else:
            j = 0
-           index = index +1
+           i = index + 1
+           # index = index + 1
         canvas = Canvas(second_frame, width= 260, height= 125, bg="SpringGreen2")
-        canvas.grid(row=index, column=j, sticky=NSEW)
+        canvas.grid(row=i, column=j, sticky=NSEW)
         #canvas.grid_rowconfigure(0, weight=1)
         #canvas.grid_columnconfigure(0, weight=1)
         canvas.create_text(100, 20, text =herb["name"], fill="black",anchor="w", font=('Helvetica 20 bold')) # var_herb_name.get()
@@ -639,11 +639,8 @@ def herbs_window(event):
         canvas.create_text(133, 90, text = "Width", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
         canvas.create_text(140, 100, text =herb["herb_width"],fill="black",anchor=N,justify="left" ,font=('Helvetica 10 bold') ) #var_herb_width.get()
         small_img = Image.open(herb["image"]).resize((100, 140)) 
-        smallimg_herb_photo=ImageTk.PhotoImage(small_img)
         images.append(ImageTk.PhotoImage(small_img))
-        #print(images)
-        canvas.create_image((0,0), anchor=NW, image=smallimg_herb_photo)
-        #index = index + 1
+        canvas.create_image((0,0), anchor=NW, image=images[-1])
         canvas.bind("<Button-1>", details_herb)
     
     canvas = Canvas(second_frame, width=260, height=125, bg="SpringGreen2")
