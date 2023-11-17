@@ -1,8 +1,8 @@
-import repo # import repo zbog importa napravljene baze i njezinih funkcija u repo.py
+import repo_1 # import repo zbog importa napravljene baze i njezinih funkcija u repo.py
 import time # zbog primjene sleep() metode iz tog modula, koja daje da se funkcije ponavljaju u vremenu koje je zadano u sleep()
 
 # aplikacija za provjeru da li rade funkcije za dohvaćanje zadnjih vrijednosti iz baze, (za seminarski rad)
-db_client = repo.DbClient("./pyflora/SENSE_EMU/data/readings.db") #napravili smo clienta kojem smo iz modula repo klasu DbClient koja ima bazu podataka koji nam trebaju
+db_client = repo_1.DbClient("./pyflora/Sensors/data/readings_1.db") #napravili smo clienta kojem smo iz modula repo klasu DbClient koja ima bazu podataka koji nam trebaju
 # i njoj smo predali putanju do stvorene baze i njeno ime
 
 while True: # sa ovim smo otvorili petlju koja se stalno vrti(znam to otprije), sa print dajemo da se prikazuje u terminalu

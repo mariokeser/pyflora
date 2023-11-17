@@ -1,5 +1,5 @@
-import repo # importali smo bazu koju smo napravili
-import gui # isto i tkinter koji smo napravili
+import repo_1 # importali smo bazu koju smo napravili
+import gui_1 # isto i tkinter koji smo napravili
 
 # simulator je main aplikacija koja povezuje gui i repo, baze iz repo i tkinter prozor iz gui
 def main():
@@ -8,9 +8,9 @@ def main():
 #db_name kao argument,a ovdje ćemo dati konkretno ime,stvorili smo podfolder data za putanju(gdje će biti) i dali smo ime bazi readings.db
 #readings smo izmislili(jer ćemo tu svašta različito očitavati-temperature, humidity,..) a .db je oznaka za bazu(file koji je baza),
 #spremili smo bazu u "data/readings.db", kad se stvori konekcija na bazu u DbClient i ovdje pokrene def main(), onda će se stvoriti baza u data
-    db_client = repo.DbClient("./pyflora/SENSE_EMU/data/readings.db") #jedna klasa postavljena u main
+    db_client = repo_1.DbClient("./pyflora/Sensors/data/readings_1.db") #jedna klasa postavljena u main
 
-    app = gui.App(db_client) #na app dali smo iz gui.py njegovu napravljenu klasu App koja ima tkinter za prozor,i predali smo joj klijenta na bazu
+    app = gui_1.App(db_client) #na app dali smo iz gui.py njegovu napravljenu klasu App koja ima tkinter za prozor,i predali smo joj klijenta na bazu
     #da ga može koristiti, klinet na bazu je stvoren ovdje , druga klasa postavljena u main
     app.mainloop() # i .maninloop na app kako bi se tkinter prozor mogao ovdje pokazati
 
