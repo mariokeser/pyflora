@@ -65,7 +65,7 @@ class App(tk.Tk):
 
         self.db_client = db_client
 
-        self.title("Sense Simulator")
+        self.title("Pyflora Simulator")
         self.geometry("500x300")              
 # slider za temperaturu   
         self.var_temp = tk.DoubleVar(self, 20) # varijabla za pokazivanje value tempa kao float, početna vrijednost 20
@@ -82,15 +82,16 @@ class App(tk.Tk):
         self.sld_temp.after(1000, self.save_temperature)# slider smo stavili da nakon sekunde pokrene funkciju save_temperature, koja je
         #napravljena ovdje ispod
 # radimo varijablu i slider za tlak
-        self.var_press = tk.IntVar(self, 1013) # stavili smo da je default obični atm tlak 1013
-        self.sld_press = Slider(self,
-                                "Pressure (mbar)",
-                                260, #from
-                                1260, # to, ovdje smo preskočili resolution koji je postavljen u class Slider na default 1,zato ga možemo preskočiti
+        self.var_ph_value = tk.DoubleVar(self, 7) # stavili smo da je default obični atm tlak 1013
+        self.sld_ph_value = Slider(self,
+                                "pH_value (pH)",
+                                1, #from
+                                14,
+                                0.5, # to, ovdje smo preskočili resolution koji je postavljen u class Slider na default 1,zato ga možemo preskočiti
                                 length=250, #ali zato onda ove vrijednosti ispod resolutiona trebamo nazvati po njihovim parametrima iz
-                                variable=self.var_press) # konstruktora klase Slider
-        self.sld_press.grid(column=1, row=0) # pozicioniran da se pokaže pored slidera za temp
-        self.sld_press.after(1000, self.save_pressure) # slider smo stavili da nakon sekunde pokrene funkciju save_pressure
+                                variable=self.var_ph_value) # konstruktora klase Slider
+        self.sld_ph_value.grid(column=1, row=0) # pozicioniran da se pokaže pored slidera za temp
+        self.sld_ph_value.after(1000, self.save_ph_value) # slider smo stavili da nakon sekunde pokrene funkciju save_pressure
 #Na isti način smo dodali i vlažnost, varijablu i slider, i pokrenuli na slider funkciju sa .afetr
         self.var_hum = tk.IntVar(self, 50) # defaultb broj je 50
         self.sld_hum = Slider(self, # vrijednosti se postavljaju redom kako su navedeni parametri u konstruktoru klase
@@ -109,10 +110,10 @@ class App(tk.Tk):
         self.sld_temp.after(1000, self.save_temperature)
 # napravili smo save-anje tlaka, na isti način kao save-anje tempa, sa funkcijom kojoj iz clienta predamo metodu za spremanje tlaka u bazu i 
 #njoj predamo ovdje napravljenu IntVar varijablu za pokazivaje integera i s funkcijom  .get() zovemo taj broj da ga pokaže u bazi
-    def save_pressure(self):
-        self.db_client.save_pressure_reading(self.var_press.get())
+    def save_ph_value(self):
+        self.db_client.save_ph_value_reading(self.var_ph_value.get())
 # i opet smo pozvali slider da nakon sekunde pozove funkciju save_pressure i tako napravili da te vrijednosti stalno pokazuje svake sekunde
-        self.sld_press.after(1000, self.save_pressure)
+        self.sld_ph_value.after(1000, self.save_ph_value)
 # napravili funkciju za dohvaćanje vlažnosti iz baze i njoj predali IntVar varijablu koja služi za upis inegera i s .get() da ih prikaže u bazi
 
     def save_humidity(self):

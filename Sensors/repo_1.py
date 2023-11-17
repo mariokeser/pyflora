@@ -12,11 +12,11 @@ create_temperature_table_query = """CREATE TABLE IF NOT EXISTS temperature (
     read_time DATETIME NOT NULL,
     value FLOAT NOT NULL
 )"""
-# ovdje dodajemo tlakove u query, stvar je ista kao za create_temperature_table_query
-create_pressure_table_query = """CREATE TABLE IF NOT EXISTS pressure (
+# query za ph value
+create_ph_value_table_query = """CREATE TABLE IF NOT EXISTS ph_value (
     id INTEGER PRIMARY KEY,
     read_time DATETIME NOT NULL,
-    value INTEGER NOT NULL
+    value FLOAT NOT NULL
 )"""
 # query za tablicu za humidity, istakao i prethdne
 create_humidity_table_query = """CREATE TABLE IF NOT EXISTS humidity (
@@ -29,8 +29,8 @@ create_humidity_table_query = """CREATE TABLE IF NOT EXISTS humidity (
 #upitnike popunjavamo u funkciji kojoj predamo query
 insert_temperature_query = """INSERT INTO temperature (read_time, value)
 VALUES (?, ?)"""
-#query za insert tlakova, isti način kao za insert_temperature_query
-insert_pressure_query = """INSERT INTO pressure (read_time, value)
+#query za insert ph value
+insert_ph_value_query = """INSERT INTO ph_value (read_time, value)
 VALUES (?, ?)"""
 #query za insert humidity, isto kao ovo prije
 insert_humidity_query = """INSERT INTO humidity (read_time, value)
@@ -44,8 +44,8 @@ VALUES (?, ?)"""
 select_temperature_query = """SELECT  value FROM temperature
 ORDER BY read_time DESC
 LIMIT 1"""
-# isto vrijedi i za ova druga 2 querya
-select_pressure_query = """SELECT value FROM pressure
+# select za ph value
+select_ph_value_query = """SELECT value FROM ph_value
 ORDER BY read_time DESC
 LIMIT 1"""
 
@@ -107,7 +107,7 @@ class DbClient:
             cursor = conn.cursor() # pokrenili smo cursor nad konekcijom za stvaranje baze
 
             cursor.execute(create_temperature_table_query)# na cursor.execute poziva se query
-            cursor.execute(create_pressure_table_query) # dodali smo i ovaj query za tablicu tlaka if not exists
+            cursor.execute(create_ph_value_table_query) # dodali smo i ovaj query za tablicu tlaka if not exists
             cursor.execute(create_humidity_table_query)# stvorili tablicu
 
             conn.commit() # na konekciji se mora napraviti .commit() da se na konekciju napravi tablica baze 
@@ -135,11 +135,11 @@ class DbClient:
 # funkcija za save_pressure je ista kao za save_temperature_reading.
 # kad otvorim bazu u dbeaver i otiđem na tablicu za temperaturu i otvorim sql editor i tamo na automatski postavljeni SELECT na temperature
 #umjesto temperature upišem pressure,pokaže mi tablicu od tlaka
-    def save_pressure_reading(self, value): 
+    def save_ph_value_reading(self, value): 
         try:
             cursor = self.conn.cursor()
 
-            cursor.execute(insert_pressure_query,
+            cursor.execute(insert_ph_value_query,
                            (datetime.datetime.now(), value))
 
             self.conn.commit()
@@ -179,11 +179,11 @@ class DbClient:
         finally:
             cursor.close()
 #isto je za dohvaćanje tlaka i vlažnosti
-    def get_pressure(self):
+    def get_ph_value(self):
         try:
             cursor = self.conn.cursor()
 
-            cursor.execute(select_pressure_query)
+            cursor.execute(select_ph_value_query)
 
             record = cursor.fetchone()
 

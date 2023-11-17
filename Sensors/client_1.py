@@ -7,7 +7,7 @@ db_client = repo_1.DbClient("./pyflora/Sensors/data/readings_1.db") #napravili s
 
 while True: # sa ovim smo otvorili petlju koja se stalno vrti(znam to otprije), sa print dajemo da se prikazuje u terminalu
     print(f"Temperature: {db_client.get_temperature()}°C") # u formatu dajemo prvo ime vrijednosti koju očitavamo i clientu predamo
-    print(f"Pressure: {db_client.get_pressure()} mbar") #metode za dohvaćanje vrijednosti koje su iz clase DbClient koja je predana db_clientu
+    print(f"Pressure: {db_client.get_ph_value()} pH") #metode za dohvaćanje vrijednosti koje su iz clase DbClient koja je predana db_clientu
     print(f"Humidity: {db_client.get_humidity()}%")#ta varijabla je u bracketsu da ju dohvati i za kraj u stringu mjerna jedinica
 
     time.sleep(0.9) # time.sleep smo dali na 0.9 sekundi da radi malo brže nego što se upisuje u bazu,brzinu upisa u bazu smo odredili u
