@@ -201,12 +201,14 @@ var_herb_features = StringVar(value="")
 var_herb_height = StringVar(value="")
 var_herb_width = StringVar(value="")
 var_herb_luminosity = StringVar(value="")
+var_herb_image = StringVar(value="")
 herb_image = StringVar(value="")
-
 # za select/get images
 bigimg_herb_photo = None 
 smallimg_herb_photo = None 
 images = []
+
+
 # za dohvaćanje/select image iz get funkcije
 def get_images(): # tu sam stao zbog errora update herb, kad ne izaberem image preko funkcije već ostavim koji je
      global bigimg_herb_photo, smallimg_herb_photo, thumbnail_photo, thumbnail_herb_photo
@@ -226,14 +228,6 @@ def add_herb_photo():
         input_herb_photo = filedialog.askopenfilename(title="Select herb image")
         herb_image.set(input_herb_photo)
         get_images()   
-"""
-herbs = ""
-def set_herb_images(herb):
-    global smallimg_herb_photo
-    for index, herb in enumerate(get_all_herbs):
-        small_img = Image.open(herb).resize((100, 140)) 
-        smallimg_herb_photo = ImageTk.PhotoImage(small_img)
-"""
         
 def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je samo zbog isprobavanja drugih funkcija
     global herb_image, input_herb_photo
@@ -539,9 +533,9 @@ def delete_button_herb():
        return
 def update_herbs():
     update_herb("<Button-1>")
-    
+id = StringVar()
 def details_herb(event):
-    global tp, bigimg_herb_photo, thumbnail_photo
+    global tp, bigimg_herb_photo, thumbnail_photo,  ids
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -564,6 +558,18 @@ def details_herb(event):
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, pady=100, padx=43)
     #frame_2.grid(row=2, column=0, sticky=W)
+    herb_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, id) 
+    var_herb_id.set(herb_id)
+    var_herb_name.set(herb_name)
+    var_herb_moisture.set(soil_moisture)
+    var_herb_air_temp.set(air_temperature)
+    var_herb_ph.set(ph_value)
+    var_herb_features.set(features)
+    var_herb_height.set(herb_height)
+    var_herb_width.set(herb_width)
+    var_herb_luminosity.set(luminosity)
+    var_herb_image.set(image)
+    
     Label(frame_2, textvariable=var_herb_name, fg="green", font=("Arial", 20)).grid(row=0, column=0, padx=200, sticky="w")
     Button(frame_2, text="UPDATE", fg="green",command=update_herbs, width=12, height=1).grid(row=0, column=1, ipady=2, sticky=W, pady=20, padx=580)
     Button(frame_2, text="DELETE", fg="red",width=12, command=delete_button_herb).grid(row=0, column=1, sticky=W, ipady=2, pady=20, padx=420)
@@ -571,7 +577,7 @@ def details_herb(event):
     canvas .grid(row=1, column=1,  rowspan=5, sticky=W, padx=420)
     canvas.create_image((0,0),image=bigimg_herb_photo, anchor=NW)
     Label(frame_2, text="Herb cultivation", fg="yellow").grid(row=1, column=0, sticky=W, padx=200)
-    Label(frame_2, textvariable=var_herb_moisture, fg="green").grid(row=2, column=0, sticky=W, padx=200)
+    Label(frame_2, textvariable=var_herb_moisture, fg="green").grid(row=2, column=0, sticky=W, padx=200) #var_herb_moisture
     Label(frame_2, textvariable=var_herb_luminosity, fg="green").grid(row=3, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_ph, fg="green").grid(row=4, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_air_temp, fg="green").grid(row=5, column=0, sticky=W, padx=200)
@@ -579,7 +585,7 @@ def details_herb(event):
 
 #window sa listom dohvaćenih/postavljenih biljaka
 def herbs_window(event):
-    global tp, smallimg_herb_photo, images
+    global tp, smallimg_herb_photo, images, id
     tp.withdraw()
     tp=Toplevel()
     width=tp.winfo_screenwidth()
@@ -626,9 +632,13 @@ def herbs_window(event):
         else:
            j = 0
            i = index + 1
+           
            # index = index + 1
+       
         canvas = Canvas(second_frame, width= 260, height= 125, bg="SpringGreen2")
         canvas.grid(row=i, column=j, sticky=NSEW)
+    
+        #id = herb["id"]
         #canvas.grid_rowconfigure(0, weight=1)
         #canvas.grid_columnconfigure(0, weight=1)
         canvas.create_text(100, 20, text =herb["name"], fill="black",anchor="w", font=('Helvetica 20 bold')) # var_herb_name.get()
@@ -641,7 +651,10 @@ def herbs_window(event):
         small_img = Image.open(herb["image"]).resize((100, 140)) 
         images.append(ImageTk.PhotoImage(small_img))
         canvas.create_image((0,0), anchor=NW, image=images[-1])
-        canvas.bind("<Button-1>", details_herb)
+        canvas.bind("<Button-1>"
+
+        
+
     
     canvas = Canvas(second_frame, width=260, height=125, bg="SpringGreen2")
     canvas.grid(row=0, column=0, sticky=NSEW)   #row=len(get_all_herbs), column=1

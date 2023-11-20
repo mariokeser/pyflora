@@ -194,16 +194,7 @@ def get_herb(conn, id):
             cursor.close()
     except sqlite3.Error as err: 
         print(f"ERROR: {err}")
-"""
-soil_moisture FLOAT NOT NULL,
-    luminosity FLOAT NOT NULL,
-    air_temperature FLOAT NOT NULL,
-    ph_value FLOAT NOT NULL,
-    features TEXT NOT NULL,
-    herb_height INTEGER NOT NULL,
-    herb_width INTEGER NOT NULL,
-    image TEXT NOT NULL
-    """
+
 def get_all_herbs(conn):
     try:
         cursor = conn.cursor()
