@@ -534,8 +534,8 @@ def delete_button_herb():
 def update_herbs():
     update_herb("<Button-1>")
 id = StringVar()
-def details_herb(event):
-    global tp, bigimg_herb_photo, thumbnail_photo,  ids
+def details_herb(event, herb_id):
+    global tp, bigimg_herb_photo, thumbnail_photo
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -558,7 +558,7 @@ def details_herb(event):
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, pady=100, padx=43)
     #frame_2.grid(row=2, column=0, sticky=W)
-    herb_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, id) 
+    herb_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, herb_id) 
     var_herb_id.set(herb_id)
     var_herb_name.set(herb_name)
     var_herb_moisture.set(soil_moisture)
@@ -568,13 +568,15 @@ def details_herb(event):
     var_herb_height.set(herb_height)
     var_herb_width.set(herb_width)
     var_herb_luminosity.set(luminosity)
-    var_herb_image.set(image)
+    var_herb_image = image
     
     Label(frame_2, textvariable=var_herb_name, fg="green", font=("Arial", 20)).grid(row=0, column=0, padx=200, sticky="w")
     Button(frame_2, text="UPDATE", fg="green",command=update_herbs, width=12, height=1).grid(row=0, column=1, ipady=2, sticky=W, pady=20, padx=580)
     Button(frame_2, text="DELETE", fg="red",width=12, command=delete_button_herb).grid(row=0, column=1, sticky=W, ipady=2, pady=20, padx=420)
     canvas = Canvas(frame_2, width= 300, height= 300, bg="SpringGreen2")
     canvas .grid(row=1, column=1,  rowspan=5, sticky=W, padx=420)
+    big_img = Image.open(var_herb_image).resize((303, 303))
+    bigimg_herb_photo = ImageTk.PhotoImage(big_img)
     canvas.create_image((0,0),image=bigimg_herb_photo, anchor=NW)
     Label(frame_2, text="Herb cultivation", fg="yellow").grid(row=1, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_moisture, fg="green").grid(row=2, column=0, sticky=W, padx=200) #var_herb_moisture
@@ -651,7 +653,7 @@ def herbs_window(event):
         small_img = Image.open(herb["image"]).resize((100, 140)) 
         images.append(ImageTk.PhotoImage(small_img))
         canvas.create_image((0,0), anchor=NW, image=images[-1])
-        canvas.bind("<Button-1>"
+        canvas.bind("<Button-1>", lambda event, herb_id=herb["id"]: details_herb(event, herb_id))
 
         
 
