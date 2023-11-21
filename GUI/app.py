@@ -316,7 +316,7 @@ def addnew_herb(event):
 
 #za gumb update/ažuriranje podataka o postojećoj/dodanoj biljci
 def store_update_herb():
-    global herb_image, input_herb_photo
+    global var_herb_image, input_herb_photo
     def edit_herb():
         #herb_image.set(input_herb_photo)
         db.update_herb(conn, var_herb_name.get(), var_herb_moisture.get(), var_herb_luminosity.get(), var_herb_air_temp.get(), var_herb_ph.get(), var_herb_features.get(),
@@ -329,12 +329,16 @@ def store_update_herb():
     var_herb_features.set(edit_features.get())
     var_herb_height.set(edit_herb_height.get())
     var_herb_width.set(edit_herb_width.get())
+    var_herb_image = input_herb_photo
+    herb_image.set(var_herb_image)
+    #herb_image.set(var_herb_image)
+    #herb_id = StringVar(value="")
     #herb_image.set(input_herb_photo)# input_herb_photo iz update herb koji sam dobio preko funkcije add_herb_photo na Buttonu Change herb image, herb_image ide u get_images() ispod
-    edit_herb()
     get_images()
-    
-    
-    details_herb("<Button-1>")
+    edit_herb()
+    details_herb("<Button-1>", var_herb_id.get())
+
+
 def cancel_update_herb():
     details_herb("<Button-1>")
 
@@ -394,8 +398,6 @@ def update_herb(event):
     thumbnail_photo.grid(row=9, column=0, sticky="e", padx=50)
     get_images()
     Button(frame_2,text="Change herb image", fg="green", command=add_herb_photo).grid(row=9, column=0, sticky="w",padx=50, pady=5)
-     
-      
     Entry(frame_2, textvariable=edit_herb_height,  background="white", fg="black", width=50).grid(row=8, column=0, pady=5, padx=50)
     Label(frame_2, text="Change air temperature", fg="red").grid(row=1, column=1, sticky="w", padx=20)
     Entry(frame_2, textvariable=edit_air_temperature,  background="white", fg="black", width=50).grid(row=2, column=1, sticky="w", padx=20)
@@ -538,7 +540,7 @@ def delete_button_herb():
        return
 def update_herbs():
     update_herb("<Button-1>")
-id = StringVar()
+
 def details_herb(event, herb_id):
     global tp, bigimg_herb_photo, thumbnail_photo, var_herb_image
     tp.withdraw()
@@ -563,8 +565,8 @@ def details_herb(event, herb_id):
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, pady=100, padx=43)
     #frame_2.grid(row=2, column=0, sticky=W)
-    herb_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, herb_id) 
-    var_herb_id.set(herb_id)
+    herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, herb_id) 
+    var_herb_id.set(herbs_id)
     var_herb_name.set(herb_name)
     var_herb_moisture.set(soil_moisture)
     var_herb_air_temp.set(air_temperature)
@@ -588,11 +590,11 @@ def details_herb(event, herb_id):
     Label(frame_2, textvariable=var_herb_luminosity, fg="green").grid(row=3, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_ph, fg="green").grid(row=4, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_air_temp, fg="green").grid(row=5, column=0, sticky=W, padx=200)
-    return event
+    return event, herb_id
 
 #window sa listom dohvaćenih/postavljenih biljaka
 def herbs_window(event):
-    global tp, smallimg_herb_photo, images, id
+    global tp, smallimg_herb_photo, images, herb_id
     tp.withdraw()
     tp=Toplevel()
     width=tp.winfo_screenwidth()
@@ -659,7 +661,8 @@ def herbs_window(event):
         images.append(ImageTk.PhotoImage(small_img))
         canvas.create_image((0,0), anchor=NW, image=images[-1])
         canvas.bind("<Button-1>", lambda event, herb_id=herb["id"]: details_herb(event, herb_id))
-
+        
+        
         
 
     
