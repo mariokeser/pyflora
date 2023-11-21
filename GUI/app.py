@@ -211,7 +211,7 @@ images = []
 
 # za dohvaćanje/select image iz get funkcije
 def get_images(): # tu sam stao zbog errora update herb, kad ne izaberem image preko funkcije već ostavim koji je
-     global bigimg_herb_photo, smallimg_herb_photo, thumbnail_photo, thumbnail_herb_photo
+     global bigimg_herb_photo, smallimg_herb_photo, thumbnail_photo, thumbnail_herb_photo, input_herb_photo
      if input_herb_photo == "":
          return
      else:
@@ -346,9 +346,10 @@ edit_ph_value = StringVar(value=" ")
 edit_features = StringVar(value=" ")
 edit_herb_height = StringVar(value=" ")
 edit_herb_width = StringVar(value=" ")
-
+edit_herb_image = "./pyflora/GUI/images/herb_photo.jpg"
+thumbnail_photo = Label()
 def update_herb(event):
-    global tp, thumbnail_photo
+    global tp, thumbnail_photo, var_herb_image, input_herb_photo
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -366,6 +367,8 @@ def update_herb(event):
     edit_herb_height.set(var_herb_height.get())
     edit_herb_width.set(var_herb_width.get())
     edit_luminosity.set(var_herb_luminosity.get())
+    input_herb_photo = var_herb_image
+
     l1=Label(frame, text="PyFlora Container", font=("Arial", 23), fg="green")
     l1.pack(side=LEFT, expand=True)
     #l1.grid(row=0, column=0, sticky=W, padx=180)
@@ -387,10 +390,12 @@ def update_herb(event):
     Label(frame_2, text="Change luminosity", fg="red").grid(row=5, column=0, sticky="w",  pady=5, padx=50)
     Entry(frame_2, textvariable=edit_luminosity,  background="white", fg="black", width=50).grid(row=6, column=0, pady=5, padx=50)
     Label(frame_2, text="Change herb height", fg="red").grid(row=7, column=0, sticky="w",  pady=5, padx=50)
-    Button(frame_2,text="Change herb image", fg="green", command=add_herb_photo).grid(row=9, column=0, sticky="w",padx=50, pady=5)
     thumbnail_photo = Label(frame_2)
     thumbnail_photo.grid(row=9, column=0, sticky="e", padx=50)
-    get_images()    
+    get_images()
+    Button(frame_2,text="Change herb image", fg="green", command=add_herb_photo).grid(row=9, column=0, sticky="w",padx=50, pady=5)
+     
+      
     Entry(frame_2, textvariable=edit_herb_height,  background="white", fg="black", width=50).grid(row=8, column=0, pady=5, padx=50)
     Label(frame_2, text="Change air temperature", fg="red").grid(row=1, column=1, sticky="w", padx=20)
     Entry(frame_2, textvariable=edit_air_temperature,  background="white", fg="black", width=50).grid(row=2, column=1, sticky="w", padx=20)
@@ -535,7 +540,7 @@ def update_herbs():
     update_herb("<Button-1>")
 id = StringVar()
 def details_herb(event, herb_id):
-    global tp, bigimg_herb_photo, thumbnail_photo
+    global tp, bigimg_herb_photo, thumbnail_photo, var_herb_image
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
