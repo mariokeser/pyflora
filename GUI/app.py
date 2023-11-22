@@ -487,7 +487,8 @@ def main_window(event):
 def delete_button_herb():
     answer = askyesno(title="confirmation", message="Are you sure that you want to proceed with delete action?")
     if answer:
-        db.delete_herb(conn, 13) 
+        db.delete_herb(conn, var_herb_id.get()) 
+        herbs_window("<Button-1>")
     else:
        return
 def update_herbs():
@@ -537,7 +538,7 @@ def details_herb(event, herb_id):
     Label(frame_2, textvariable=var_herb_luminosity, fg="green").grid(row=3, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_ph, fg="green").grid(row=4, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_air_temp, fg="green").grid(row=5, column=0, sticky=W, padx=200)
-    return event, herb_id
+    return event
 
 #window sa listom dohvaćenih/postavljenih biljaka
 def herbs_window(event):
