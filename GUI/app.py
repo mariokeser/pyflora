@@ -26,33 +26,26 @@ def login_window():
         else:
             root.withdraw()
             main_window("<Button-1>")
-    root.attributes("-fullscreen", True)
+    root.attributes("-fullscreen", False)
     root.title("")
     frame = Frame(root)
     frame.pack(fill=BOTH, expand=True)
-    #frame.grid(row=0, column=0)
-    Label(frame,bg="green", text="Pyflora Container",font=("Arial", 28)).pack(anchor="ne", expand=True,fill=X, side=TOP, ipady=5)#grid(row=0, column=0, padx=100, sticky=W)
-
+    Label(frame,bg="green", text="Pyflora Container",font=("Arial", 28)).pack(anchor="ne", expand=True,fill=X, side=TOP, ipady=5)
     frm_login=LabelFrame(frame,fg="green", text="Log in", font=("Arial", 30,))
     frm_login.pack(anchor="n", side=TOP, expand=True)
-    #frm_login.grid(row=1, column=0,padx=550,pady=200)
-    
     Label(frm_login,bg="green", text="User name:").grid(row=2, column=0, padx=30, pady=30)
     ent_username = Entry(frm_login) 
     ent_username.grid(row=2, column=1) 
     ent_username.focus()
-
     Label(frm_login,bg="green", text="Password:").grid(row=3, column=0, padx=30, pady=30)
     ent_pass = Entry(frm_login, show="*")
     ent_pass.grid(row=3, column=1)
-
     button_login=Button(frm_login,fg="green",text="Log in", command=login, width=10)
     button_login.grid(row=4, column=0, columnspan=2, pady=20)
     def update_date_profile(event):
         login()
     root.bind("<Return>", update_date_profile)
-    #root.protocol('WM_DELETE_WINDOW')
-
+    
 
 # za pohranu/odustanak od dodavanja novih pycontainera i povrat na window sa listom pycontainera-main window
 def store_addnew_pycontainer():
@@ -81,20 +74,16 @@ def addnew_pycontainer(event):
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
-    #frame.grid(row=0, column=0,ipady=10, sticky=W)
     l1=Label(frame, text="PyFlora Container", font=("Arial", 23), fg="green")
     l1.pack(side=LEFT, expand=True)
-    #l1.grid(row=0, column=0, sticky=W, padx=180)
     l1.bind("<Button-1>", main_window)
     l2=Label(frame, text="Herbs", font=("Arial", 23), fg="green")
     l2.pack(side=LEFT, expand=True)
-    #l2.grid(row=0, column=1, sticky=W, padx=133)
     l2.bind("<Button-1>", herbs_window)
-    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)#grid(row=0, column=2, sticky=E, padx=202, ipady=1)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)#grid(row=1, column=0,pady=10,sticky=E,padx=205, ipady=3)
+    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
+    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True)
-    #frame_2.grid(row=2, column=0, pady=20)
     Label(frame_2, text="Pycontainer", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w",pady=50, padx=173)
     Label(frame_2, text="Pycontainer name", fg="red").grid(row=1, column=0, sticky="w",  pady=5, padx=173)
     Entry(frame_2, textvariable=input_container_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=173)
@@ -124,7 +113,6 @@ def addnew_pycontainer(event):
     return event
 
 # za gumb update/ažuriranje podataka o postojećim containerima
-
 def store_update_pycontainer():
     details_pyflora_container("<Button-1>")
 def cancel_update_pycontainer():
@@ -143,20 +131,16 @@ def update_pycontainer(event):
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
-    #frame.grid(row=0, column=0,ipady=10, sticky=W)
     l1=Label(frame, text="PyFlora Container", font=("Arial", 23), fg="green")
     l1.pack(side=LEFT, expand=True)
-    #l1.grid(row=0, column=0, sticky=W, padx=180)
     l1.bind("<Button-1>", main_window)
     l2=Label(frame, text="Herbs", font=("Arial", 23), fg="green")
     l2.pack(side=LEFT, expand=True)
-    #2.grid(row=0, column=1, sticky=W, padx=133)
     l2.bind("<Button-1>", herbs_window)
-    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)#grid(row=0, column=2, sticky=E, padx=202, ipady=1)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)#grid(row=1, column=0,pady=10,sticky=E,padx=205, ipady=3)
+    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
+    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, padx=160)
-    #frame_2.grid(row=2, column=0, pady=20)
     Label(frame_2, text="Pycontainer", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w",pady=50, padx=50)
     Label(frame_2, text="Change Pycontainer name", fg="red").grid(row=1, column=0, sticky="w",  pady=5, padx=50)
     Entry(frame_2, textvariable=update_container_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=50)
@@ -189,8 +173,6 @@ input_herb_width = StringVar(value=" ")
 input_herb_photo = "./pyflora/GUI/images/herb_photo.jpg"
 
 
-#varijable za get funkciju
-
 #varijable za input iz get funkcije u entrye, labele i canvas
 var_herb_id = StringVar(value="")
 var_herb_name = StringVar(value="")
@@ -209,8 +191,8 @@ smallimg_herb_photo = None
 images = []
 
 
-# za dohvaćanje/select image iz get funkcije
-def get_images(): # tu sam stao zbog errora update herb, kad ne izaberem image preko funkcije već ostavim koji je
+# za dohvaćanje i prikaz imagesa iz
+def get_images(): 
      global bigimg_herb_photo, smallimg_herb_photo, thumbnail_photo, thumbnail_herb_photo, input_herb_photo
      if input_herb_photo == "":
          return
@@ -255,7 +237,6 @@ def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je
     #var_herb_luminosity.set(luminosity)
     #input_herb_photo = image
     get_images()
-    
     herbs_window("<Button-1>")
 
 def cancel_addnew_herb():
@@ -271,20 +252,16 @@ def addnew_herb(event):
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
-    #frame.grid(row=0, column=0,ipady=10, sticky=W)
     l1=Label(frame, text="PyFlora Container", font=("Arial", 23), fg="green")
     l1.pack(side=LEFT, expand=True)
-    #l1.grid(row=0, column=0, sticky=W, padx=180)
     l1.bind("<Button-1>", main_window)
     l2=Label(frame, text="Herbs", font=("Arial", 23), fg="green")
     l2.pack(side=LEFT, expand=True)
-    #l2.grid(row=0, column=1, sticky=W, padx=133)
     l2.bind("<Button-1>", herbs_window)
-    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)#grid(row=0, column=2, sticky=E, padx=202, ipady=1)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)#grid(row=1, column=0,pady=10,sticky=E,padx=205, ipady=3)
+    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
+    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, padx=160)
-    #frame_2.grid(row=2, column=0, pady=20)
     Label(frame_2, text="Herb", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w",pady=40, padx=50)
     Label(frame_2, text="Add herb name", fg="red").grid(row=1, column=0, sticky="w",pady=5, padx=50)
     Entry(frame_2, textvariable=input_herb_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=50)
@@ -312,7 +289,6 @@ def addnew_herb(event):
     cancel_button.grid(row=11, column=1, sticky="e", pady=150, padx=20)
     return event
 
-# funkcija za update herb podatke
 
 #za gumb update/ažuriranje podataka o postojećoj/dodanoj biljci
 def store_update_herb():
@@ -340,7 +316,7 @@ def store_update_herb():
 
 
 def cancel_update_herb():
-    details_herb("<Button-1>")
+    details_herb("<Button-1>", var_herb_id.get())
 
 edit_herb_name = StringVar(value=" ")
 edit_soil_moisture = StringVar(value=" ")
@@ -362,7 +338,6 @@ def update_herb(event):
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
-    #frame.grid(row=0, column=0,ipady=10, sticky=W)
     edit_herb_name.set(var_herb_name.get())
     edit_soil_moisture.set(var_herb_moisture.get())
     edit_air_temperature.set(var_herb_air_temp.get())
@@ -375,17 +350,14 @@ def update_herb(event):
 
     l1=Label(frame, text="PyFlora Container", font=("Arial", 23), fg="green")
     l1.pack(side=LEFT, expand=True)
-    #l1.grid(row=0, column=0, sticky=W, padx=180)
     l1.bind("<Button-1>", main_window)
     l2=Label(frame, text="Herbs", font=("Arial", 23), fg="green")
     l2.pack(side=LEFT, expand=True)
-    #l2.grid(row=0, column=1, sticky=W, padx=133)
     l2.bind("<Button-1>", herbs_window)
-    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)#grid(row=0, column=2, sticky=E, padx=202, ipady=1)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)#grid(row=1, column=0,pady=10,sticky=E,padx=205, ipady=3)
+    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
+    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, padx=160)
-    #frame_2.grid(row=2, column=0, pady=20)
     Label(frame_2, textvariable=edit_herb_name, fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w",pady=50, padx=50)
     Label(frame_2, text="Change herb name", fg="red").grid(row=1, column=0, sticky="w",  pady=5, padx=50)
     Entry(frame_2, textvariable=edit_herb_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=50)
@@ -437,21 +409,16 @@ def details_pyflora_container(event):
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
-    #frame.grid(row=0, column=0,ipady=10, sticky=W)
     l1=Label(frame, text="PyFlora Container", font=("Arial", 23), fg="green")
     l1.pack(side=LEFT, expand=True)
-    #l1.grid(row=0, column=0, sticky=W, padx=180)
     l1.bind("<Button-1>", main_window)
     l2=Label(frame, text="Herbs", font=("Arial", 23), fg="green")
     l2.pack(side=LEFT, expand=True)
-    #l2.grid(row=0, column=1, sticky=W, padx=133)
     l2.bind("<Button-1>", herbs_window)
-    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)#grid(row=0, column=2, sticky=E, padx=202, ipady=1)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)#grid(row=1, column=0,pady=10,sticky=E,padx=204, ipady=3)
-    
+    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
+    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, padx=100)
-    #frame_2.grid(row=2, column=0, pady=20)
     Label(frame_2, text="Pycontainer name", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky=W,pady=10, padx=136)
     Button(frame_2, text="UPDATE", fg="green",command=update_pycontainers, width=12).grid(row=0, column=1, sticky="w", ipady=2, pady=10, padx=470)
     Button(frame_2, text="DELETE", fg="red",width=12, command=delete_button_pycontainer).grid(row=0, column=1, sticky="w", ipady=2, pady=10, padx=307)
@@ -490,19 +457,15 @@ def main_window(event):
     tp.option_add("*Entry.disabledBackground", "white")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
-    #frame.grid(row=0, column=0,ipady=10, sticky=W)
     l1=Label(frame, text="PyFlora Container", font=("Arial", 23), fg="green")
     l1.pack(side=LEFT, expand=True)
-    #l1.grid(row=0, column=0, sticky=W, padx=180)
     l2=Label(frame, text="Herbs", font=("Arial", 23), fg="green")
     l2.pack(side=LEFT, expand=True)
-    #l2.grid(row=0, column=1, sticky=W, padx=133)
     l2.bind("<Button-1>", herbs_window)
-    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)#grid(row=0, column=2, sticky=E, padx=202, ipady=1)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)#grid(row=1, column=0, sticky=E, padx=204,pady=20, ipady=3)
+    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
+    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True)
-    #frame_2.grid(row=2, column=0, pady=50)
     my_canvas = Canvas(frame_2)
     my_canvas.pack(side="left", fill="both", expand=True, padx=450)
     my_scrollbar = Scrollbar(frame_2, orient=VERTICAL, command=my_canvas.yview)
@@ -551,20 +514,16 @@ def details_herb(event, herb_id):
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
-    #frame.grid(row=0, column=0,ipady=10, sticky=W)
     l1=Label(frame, text="PyFlora Container", font=("Arial", 23), fg="green")
     l1.pack(side=LEFT, expand=True)
-    #l1.grid(row=0, column=0, sticky=W, padx=180)
     l1.bind("<Button-1>", main_window)
     l2=Label(frame, text="Herbs", font=("Arial", 23), fg="green")
     l2.pack(side=LEFT, expand=True)
-    #l2.grid(row=0, column=1, sticky=W, padx=133)
     l2.bind("<Button-1>", herbs_window)
-    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)#grid(row=0, column=2, sticky=E, padx=202, ipady=1)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP,pady=20, padx=173)#grid(row=1, column=0,pady=20, ipady=3, sticky=W, padx=1090)
+    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
+    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP,pady=20, padx=173)
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, pady=100, padx=43)
-    #frame_2.grid(row=2, column=0, sticky=W)
     herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, herb_id) 
     var_herb_id.set(herbs_id)
     var_herb_name.set(herb_name)
@@ -576,7 +535,6 @@ def details_herb(event, herb_id):
     var_herb_width.set(herb_width)
     var_herb_luminosity.set(luminosity)
     var_herb_image = image
-    
     Label(frame_2, textvariable=var_herb_name, fg="green", font=("Arial", 20)).grid(row=0, column=0, padx=200, sticky="w")
     Button(frame_2, text="UPDATE", fg="green",command=update_herbs, width=12, height=1).grid(row=0, column=1, ipady=2, sticky=W, pady=20, padx=580)
     Button(frame_2, text="DELETE", fg="red",width=12, command=delete_button_herb).grid(row=0, column=1, sticky=W, ipady=2, pady=20, padx=420)
@@ -586,7 +544,7 @@ def details_herb(event, herb_id):
     bigimg_herb_photo = ImageTk.PhotoImage(big_img)
     canvas.create_image((0,0),image=bigimg_herb_photo, anchor=NW)
     Label(frame_2, text="Herb cultivation", fg="yellow").grid(row=1, column=0, sticky=W, padx=200)
-    Label(frame_2, textvariable=var_herb_moisture, fg="green").grid(row=2, column=0, sticky=W, padx=200) #var_herb_moisture
+    Label(frame_2, textvariable=var_herb_moisture, fg="green").grid(row=2, column=0, sticky=W, padx=200) 
     Label(frame_2, textvariable=var_herb_luminosity, fg="green").grid(row=3, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_ph, fg="green").grid(row=4, column=0, sticky=W, padx=200)
     Label(frame_2, textvariable=var_herb_air_temp, fg="green").grid(row=5, column=0, sticky=W, padx=200)
@@ -603,30 +561,19 @@ def herbs_window(event):
     tp.title("")
     frame=LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
-    #frame.grid(row=0, column=0, ipady=10, sticky=W)
     l1=Label(frame, text="PyFlora Container", font=("Arial", 23), fg="green")
     l1.pack(side=LEFT, expand=True)
-    #l1.grid(row=0, column=0,  sticky=W, padx=180)
     l1.bind("<Button-1>", main_window)
     l2=Label(frame, text="Herbs", font=("Arial", 23), fg="green")
     l2.pack(side=LEFT, expand=True)
-    #l2.grid(row=0, column=1, sticky=W, padx=133)
-    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)#grid(row=0, column=2, sticky=E, padx=202, ipady=1)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E,side=TOP, pady=20, padx=173)#grid(row=1, column=0, sticky=E, padx=204,pady=20, ipady=3)
+    Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
+    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E,side=TOP, pady=20, padx=173)
     frame_2 = Frame(tp)
     frame_2.pack(fill=BOTH, expand=True)
-    #frame_2.grid(row=2,column=0, sticky=NSEW) #
-    #frame_2.config(height=tp.winfo_height(), width=tp.winfo_width())
-    #frame_2.grid_rowconfigure(0, weight=1)
-    #frame_2.grid_columnconfigure(1, weight=1)
     my_canvas = Canvas(frame_2)
     my_canvas.pack(side="left", fill="both", expand=True, padx=450)
-    #my_canvas.grid(row=0, column=0) #column=2
-    #my_canvas.grid_rowconfigure(0, weight=1)
-    #my_canvas.grid_columnconfigure(0, weight=1)
     my_scrollbar = Scrollbar(frame_2, orient=VERTICAL, command=my_canvas.yview)
     my_scrollbar.pack(side="right", fill="y")
-    #my_scrollbar.grid(row=0, column=1, sticky="ns")
     my_canvas.configure(yscrollcommand=my_scrollbar.set)
     my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion= my_canvas.bbox("all")))
     second_frame = Frame(my_canvas)
@@ -634,22 +581,14 @@ def herbs_window(event):
     get_all_herbs = db.get_all_herbs(conn=conn)
     i = 0
     j = 0
-    #index = 0
     for index, herb in enumerate(get_all_herbs):
         if j < 1:
             j += 1
         else:
            j = 0
            i = index + 1
-           
-           # index = index + 1
-       
         canvas = Canvas(second_frame, width= 260, height= 125, bg="SpringGreen2")
         canvas.grid(row=i, column=j, sticky=NSEW)
-    
-        #id = herb["id"]
-        #canvas.grid_rowconfigure(0, weight=1)
-        #canvas.grid_columnconfigure(0, weight=1)
         canvas.create_text(100, 20, text =herb["name"], fill="black",anchor="w", font=('Helvetica 20 bold')) # var_herb_name.get()
         canvas.create_text(140, 50, text = "Features",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
         canvas.create_text(140, 60, text = herb["features"],fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') ) #var_herb_features.get()
@@ -661,15 +600,8 @@ def herbs_window(event):
         images.append(ImageTk.PhotoImage(small_img))
         canvas.create_image((0,0), anchor=NW, image=images[-1])
         canvas.bind("<Button-1>", lambda event, herb_id=herb["id"]: details_herb(event, herb_id))
-        
-        
-        
-
-    
     canvas = Canvas(second_frame, width=260, height=125, bg="SpringGreen2")
-    canvas.grid(row=0, column=0, sticky=NSEW)   #row=len(get_all_herbs), column=1
-    #canvas.grid_rowconfigure(0, weight=1)
-    #canvas.grid_columnconfigure(0, weight=1)
+    canvas.grid(row=0, column=0, sticky=NSEW)  
     canvas.create_text(130, 45, text="+", fill="black", anchor=CENTER,font=("Helvetica 30 bold"))
     canvas.create_text(130, 85, text="Add new herb", fill="black", anchor=CENTER,font=("Helvetica 15 bold"))
     canvas.bind("<Button-1>", addnew_herb)
