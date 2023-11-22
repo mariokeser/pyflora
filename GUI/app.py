@@ -161,18 +161,6 @@ def update_pycontainer(event):
     return event
 
 
-# za dodavanje novih biljaka u window addnew herb
-input_herb_name = StringVar(value=" ")
-input_soil_moisture =StringVar(value=" ")
-input_luminosity = StringVar(value=" ")
-input_air_temperature = StringVar(value=" ")
-input_ph_value = StringVar(value=" ") 
-input_features = StringVar(value=" ")
-input_herb_height = StringVar(value=" ")
-input_herb_width = StringVar(value=" ")
-input_herb_photo = "./pyflora/GUI/images/herb_photo.jpg"
-
-
 #varijable za input iz get funkcije u entrye, labele i canvas
 var_herb_id = StringVar(value="")
 var_herb_name = StringVar(value="")
@@ -184,11 +172,13 @@ var_herb_height = StringVar(value="")
 var_herb_width = StringVar(value="")
 var_herb_luminosity = StringVar(value="")
 var_herb_image = StringVar(value="")
-herb_image = StringVar(value="")
+
 # za select/get images
+herb_image = StringVar(value="")
 bigimg_herb_photo = None 
 smallimg_herb_photo = None 
 images = []
+thumbnail_photo = Label()
 
 
 # za dohvaćanje i prikaz imagesa iz
@@ -210,11 +200,28 @@ def add_herb_photo():
         input_herb_photo = filedialog.askopenfilename(title="Select herb image")
         herb_image.set(input_herb_photo)
         get_images()   
+
+# za dodavanje novih biljaka u windowu addnew herb
+input_herb_name = StringVar(value=" ")
+input_soil_moisture =StringVar(value=" ")
+input_luminosity = StringVar(value=" ")
+input_air_temperature = StringVar(value=" ")
+input_ph_value = StringVar(value=" ") 
+input_features = StringVar(value=" ")
+input_herb_height = StringVar(value=" ")
+input_herb_width = StringVar(value=" ")
+input_herb_photo = "./pyflora/GUI/images/herb_photo.jpg"
         
 def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je samo zbog isprobavanja drugih funkcija
     global herb_image, input_herb_photo
-    #db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
-      #  ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=herb_image.get())
+    def remove(string):
+            return string.replace(" ", "") 
+    if remove(input_herb_name.get() and input_soil_moisture.get() and input_luminosity.get() and input_air_temperature.get() and input_ph_value.get() 
+              and input_features.get() and input_herb_height.get() and input_herb_width.get() and herb_image.get() ) == "":
+        messagebox.showerror("Error!", "All parameters must be chosen!")
+        return
+    db.add_herbs(conn=conn, name=input_herb_name.get(), soil_moisture=input_soil_moisture.get(), luminosity=input_luminosity.get(), air_temperature=input_air_temperature.get(),
+        ph_value=input_ph_value.get(), features=input_features.get(), herb_hight=input_herb_height.get(), herb_width=input_herb_width.get(),image=herb_image.get())
     input_herb_name.set("")
     input_soil_moisture.set("")
     input_luminosity.set("")
@@ -223,19 +230,6 @@ def store_addnew_herb(): # za dodavanje u bazu db.add_herbs-radi, isključena je
     input_features.set("")
     input_herb_height.set("")
     input_herb_width.set("")
-    #input_herb_photo.set("")
-
-   #herb_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, herb_id) 
-    #var_herb_id.set(herb_id)
-    #var_herb_name.set(herb_name)
-    #var_herb_moisture.set(soil_moisture)
-    #var_herb_air_temp.set(air_temperature)
-    #var_herb_ph.set(ph_value)
-    #var_herb_features.set(features)
-    #var_herb_height.set(herb_height)
-    #var_herb_width.set(herb_width)
-    #var_herb_luminosity.set(luminosity)
-    #input_herb_photo = image
     get_images()
     herbs_window("<Button-1>")
 
@@ -243,7 +237,7 @@ def cancel_addnew_herb():
     herbs_window("<Button-1>")
 
 def addnew_herb(event):
-    global tp, thumbnail_photo
+    global tp, thumbnail_photo, input_herb_photo
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -294,7 +288,6 @@ def addnew_herb(event):
 def store_update_herb():
     global var_herb_image, input_herb_photo
     def edit_herb():
-        #herb_image.set(input_herb_photo)
         db.update_herb(conn, var_herb_name.get(), var_herb_moisture.get(), var_herb_luminosity.get(), var_herb_air_temp.get(), var_herb_ph.get(), var_herb_features.get(),
                    var_herb_height.get(), var_herb_width.get(), herb_image.get(), var_herb_id.get())
     var_herb_name.set(edit_herb_name.get())
@@ -307,9 +300,6 @@ def store_update_herb():
     var_herb_width.set(edit_herb_width.get())
     var_herb_image = input_herb_photo
     herb_image.set(var_herb_image)
-    #herb_image.set(var_herb_image)
-    #herb_id = StringVar(value="")
-    #herb_image.set(input_herb_photo)# input_herb_photo iz update herb koji sam dobio preko funkcije add_herb_photo na Buttonu Change herb image, herb_image ide u get_images() ispod
     get_images()
     edit_herb()
     details_herb("<Button-1>", var_herb_id.get())
@@ -326,8 +316,7 @@ edit_ph_value = StringVar(value=" ")
 edit_features = StringVar(value=" ")
 edit_herb_height = StringVar(value=" ")
 edit_herb_width = StringVar(value=" ")
-edit_herb_image = "./pyflora/GUI/images/herb_photo.jpg"
-thumbnail_photo = Label()
+
 def update_herb(event):
     global tp, thumbnail_photo, var_herb_image, input_herb_photo
     tp.withdraw()
@@ -448,9 +437,9 @@ def main_window(event):
     global tp
     tp.withdraw()
     tp = Toplevel()
-    width=tp.winfo_screenwidth()
-    height=tp.winfo_screenheight()
-    tp.geometry("%dx%d" %(width, height))
+    #width=tp.winfo_screenwidth()
+    #height=tp.winfo_screenheight()
+    tp.attributes("-fullscreen", False) #geometry("%dx%d" %(width, height))
     tp.title("")
     global img_obj
     global photo_filename
@@ -498,7 +487,7 @@ def main_window(event):
 def delete_button_herb():
     answer = askyesno(title="confirmation", message="Are you sure that you want to proceed with delete action?")
     if answer:
-        db.delete_herb(conn, 4) 
+        db.delete_herb(conn, 13) 
     else:
        return
 def update_herbs():
@@ -552,7 +541,7 @@ def details_herb(event, herb_id):
 
 #window sa listom dohvaćenih/postavljenih biljaka
 def herbs_window(event):
-    global tp, smallimg_herb_photo, images, herb_id
+    global tp, smallimg_herb_photo, images
     tp.withdraw()
     tp=Toplevel()
     width=tp.winfo_screenwidth()
