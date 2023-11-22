@@ -37,7 +37,9 @@ create_containers_query = """CREATE TABLE IF NOT EXISTS Containers(
 
 add_new_containers_query = """INSERT INTO Containers (name, herb_id) VALUES (?, ?);"""
 
-select_all_containers_query = """SELECT name FROM Containers;"""
+select_all_containers_query = """SELECT * FROM Containers"""
+select_container_query = """SELECT * FROM Containers WHERE id = ?;"""
+delete_container_query = """DELETE FROM Containers WHERE id = ?;"""
 
 
 create_herbs_query = """CREATE TABLE IF NOT EXISTS Herbs(
@@ -138,6 +140,25 @@ def get_user(conn, username):
     except sqlite3.Error as err: 
         print(f"ERROR: {err}")
 
+# za promjenu podataka usera, stari user stavljen u old username
+def update_user(conn, name, lastname,password, username):
+    try:
+        cursor = conn.cursor()
+        
+        # if get_user(conn, username) != None:
+        #     return False
+
+        cursor.execute(update_query_profile, (name, lastname, password, username))
+   
+        conn.commit()  
+        #return True
+       
+    except sqlite3.Error as err: 
+        print(f"ERROR: {err}")
+        
+    finally:
+          cursor.close() 
+
 #dodavanje posude
 def add_containers(conn, name, herb_id = None):
     try:
@@ -150,6 +171,50 @@ def add_containers(conn, name, herb_id = None):
         
     finally:
         cursor.close()
+
+def get_all_containers(conn):
+    try:
+        cursor = conn.cursor()
+        cursor.execute(select_all_containers_query)
+        record = cursor.fetchall()
+        result = []
+        
+        if record != None:
+            for item in record:
+                result.append({"id": item[0], "name": item[1], "herb_id": item[2]})
+            return result     
+        else:
+            cursor.close()
+    except sqlite3.Error as err: 
+        print(f"ERROR: {err}")
+
+def get_container(conn, id):
+    try:
+        cursor = conn.cursor()
+        cursor.execute(select_container_query, (id,))
+        record = cursor.fetchone()
+        
+        if record != None:
+            return (record[0], record[1],record[2]) 
+        else:
+            cursor.close()
+    except sqlite3.Error as err: 
+        print(f"ERROR: {err}")
+
+def delete_container(conn, id): 
+    try:
+        cursor = conn.cursor() 
+
+        if get_container(conn,id) == None:
+           return False 
+
+        cursor.execute(delete_container_query, (id,)) 
+
+        conn.commit() 
+
+        return True 
+    except sqlite3.Error as err:
+        print(f"ERROR: {err}")
 
 #dodavanje bilja
 def add_herbs(conn, name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_hight, herb_width, image):
@@ -206,46 +271,20 @@ def get_all_herbs(conn):
             for item in record:
                 result.append({"id": item[0], "name": item[1], "soil_moisture": item[2], "luminosity": item[3], "air_temperature": item[4], "ph_value": item[5],
                                "features": item[6], "herb_height": item[7], "herb_width": item[8], "image": item[9]})
-            return result
-
-               
+            return result     
         else:
             cursor.close()
     except sqlite3.Error as err: 
         print(f"ERROR: {err}")
    
-
-    
-# za promjenu podataka usera, stari user stavljen u old username
-def update_user(conn, name, lastname,password, username):
-    try:
-        cursor = conn.cursor()
-        
-        # if get_user(conn, username) != None:
-        #     return False
-
-        cursor.execute(update_query_profile, (name, lastname, password, username))
-   
-        conn.commit()  
-        #return True
-       
-    except sqlite3.Error as err: 
-        print(f"ERROR: {err}")
-        
-    finally:
-          cursor.close() 
 #za promjenu podataka herba
 def update_herb(conn, name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image, herb_id):
     try:
         cursor = conn.cursor()
-        
-        # if get_herb(conn, username) != None:
-        #     return False
 
         cursor.execute(update_herb_query, (name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image, herb_id))
    
         conn.commit()  
-        #return True
        
     except sqlite3.Error as err: 
         print(f"ERROR: {err}")
