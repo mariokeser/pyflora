@@ -40,6 +40,8 @@ add_new_containers_query = """INSERT INTO Containers (name, herb_id) VALUES (?, 
 select_all_containers_query = """SELECT * FROM Containers"""
 select_container_query = """SELECT * FROM Containers WHERE id = ?;"""
 delete_container_query = """DELETE FROM Containers WHERE id = ?;"""
+update_container_query = """UPDATE Containers SET name = ?
+WHERE id = ?;"""
 
 
 create_herbs_query = """CREATE TABLE IF NOT EXISTS Herbs(
@@ -215,6 +217,20 @@ def delete_container(conn, id):
         return True 
     except sqlite3.Error as err:
         print(f"ERROR: {err}")
+
+def update_container(conn, name, container_id):
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute(update_container_query, (name, container_id))
+   
+        conn.commit()  
+       
+    except sqlite3.Error as err: 
+        print(f"ERROR: {err}")
+        
+    finally:
+          cursor.close() 
 
 #dodavanje bilja
 def add_herbs(conn, name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_hight, herb_width, image):

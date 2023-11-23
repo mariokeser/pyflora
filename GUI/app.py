@@ -48,7 +48,9 @@ def login_window():
     
 
 # za pohranu/odustanak od dodavanja novih pycontainera i povrat na window sa listom pycontainera-main window
+id_herb = None
 def store_addnew_pycontainer():
+    global id_herb
     def remove(string):
             return string.replace(" ", "") 
     if remove(input_container_name.get()) == "":
@@ -64,7 +66,7 @@ def cancel_addnew_container():
 
 input_container_name = StringVar(value=" ")
 def addnew_pycontainer(event):
-    global tp
+    global tp, id_herb
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -108,14 +110,18 @@ def addnew_pycontainer(event):
     return event
 
 # za gumb update/ažuriranje podataka o postojećim containerima
+edit_container_name = StringVar(value=" ")
+con_herb_id = StringVar(value="")
 def store_update_pycontainer():
-    details_pyflora_container("<Button-1>")
+    var_container_name.set(edit_container_name.get())
+    def edit_container():
+        db.update_container(conn, var_container_name.get(),var_container_id.get()) # još trebam herb_id ,  edit_container_id.get(),
+    
+    edit_container()
+    details_pyflora_container("<Button-1>", var_container_id.get())
 def cancel_update_pycontainer():
-    details_pyflora_container("<Button-1>")
+    details_pyflora_container("<Button-1>", var_container_id.get())
 
-update_container_name = StringVar(value=" ")
-#input_container_4 = StringVar(value=" ")
-#input_container_5 = StringVar(value=" ")
 def update_pycontainer(event):
     global tp
     tp.withdraw()
@@ -136,13 +142,11 @@ def update_pycontainer(event):
     Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, padx=160)
+    edit_container_name.set(var_container_name.get())
+    #edit_container_id.set(var_container_id.get())
     Label(frame_2, text="Pycontainer", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w",pady=50, padx=50)
     Label(frame_2, text="Change Pycontainer name", fg="red").grid(row=1, column=0, sticky="w",  pady=5, padx=50)
-    Entry(frame_2, textvariable=update_container_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=50)
-    #Label(frame_2, text="Name of input field", fg="red").grid(row=1, column=1, sticky="w", padx=20)
-    #Entry(frame_2, textvariable=input_container_4,  background="white", fg="black", width=50).grid(row=2, column=1, sticky="w", padx=20)
-    #Label(frame_2, text="Pycontainer name", fg="red").grid(row=3, column=1, sticky="w", padx=20)
-    #Entry(frame_2, textvariable=input_container_5,  background="white", fg="black", width=50).grid(row=4, column=1, padx=20, sticky="w")
+    Entry(frame_2, textvariable=edit_container_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=50)
     option_list = ["Herb 1", "Herb 2", "Herb 3", "Herb 4"]
     value_inside = StringVar(frame_2)
     value_inside.set("Select a herb")
@@ -414,8 +418,11 @@ def details_pyflora_container(event, container_id):
     var_container_id.set(containers_id)
     var_container_name.set(container_name)
     var_container_herb_id.set(container_herb_id)
-    herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, container_herb_id) 
-    var_herb_image = image
+    if container_herb_id == None:
+        var_herb_image = "./pyflora/GUI/images/herb_photo.jpg"
+    else:
+        herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, container_herb_id) 
+        var_herb_image = image
     Label(frame_2, textvariable=var_container_name, fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky=W,pady=10, padx=136)
     Button(frame_2, text="UPDATE", fg="green",command=update_pycontainers, width=12).grid(row=0, column=1, sticky="w", ipady=2, pady=10, padx=470)
     Button(frame_2, text="DELETE", fg="red",width=12, command=delete_button_pycontainer).grid(row=0, column=1, sticky="w", ipady=2, pady=10, padx=307)
@@ -441,7 +448,7 @@ def details_pyflora_container(event, container_id):
 
 #window sa listom pycontainera
 def main_window(event):
-    global tp, var_herb_image
+    global tp, var_herb_image, container
     tp.withdraw()
     tp = Toplevel()
     #width=tp.winfo_screenwidth()
@@ -479,8 +486,11 @@ def main_window(event):
         else:
            j = 0
            i = index + 1
-        herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, container["herb_id"]) 
-        var_herb_image = image
+        if container["herb_id"] == None:
+            var_herb_image = "./pyflora/GUI/images/herb_photo.jpg"
+        else:
+            herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, container["herb_id"]) 
+            var_herb_image = image
         canvas = Canvas(second_frame, width= 260, height= 125, bg="SpringGreen2")
         canvas.grid(row=i, column=j, sticky=NSEW)
         canvas.create_text(100, 20, text=container["name"], fill="black",anchor="w", font=('Helvetica 10 bold'))
@@ -495,7 +505,7 @@ def main_window(event):
     canvas.create_text(130, 40, text="+", fill="black", anchor=CENTER,font=("Helvetica 30 bold"))
     canvas.create_text(130, 85, text="Add new\nPycontainer", fill="black", anchor=CENTER,font=("Helvetica 15 bold"))
     canvas.bind("<Button-1>",addnew_pycontainer )
-    Button(second_frame, text="Empty   PyFlora   Containers", fg="green", width=55).grid(row=container["id"], column=0, columnspan=2)
+    Button(second_frame, text="Empty   PyFlora   Containers", fg="green", width=55).grid(row=container["id"] +1, column=0, columnspan=2)
     return event
 
 
