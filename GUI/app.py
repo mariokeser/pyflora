@@ -102,8 +102,7 @@ def addnew_pycontainer(event):
             if herb["name"] == value_inside.get():
                 id_herb = herb["id"]
             else:
-                return
-            
+                return 
         return id_herb
     herb_menu = OptionMenu(frame_2, value_inside, *option_list, command=get_herb_name) 
     herb_menu.config(width=46)
@@ -157,7 +156,8 @@ def update_pycontainer(event):
     #else:
         
     all_herbs = db.get_all_herbs(conn=conn)
-    option_list = ["Empty pycontainer"]
+    all_herbs.append({"name" :"Empty pycontainer"})
+    option_list = []
     for herb in all_herbs:
         option_list.append(herb["name"])
     value_inside = StringVar(frame_2)
@@ -167,8 +167,8 @@ def update_pycontainer(event):
         for herb in all_herbs:
             if herb["name"] == value_inside.get():
                 id_herb = herb["id"]
-            #else:
-              #  id_herb = None
+            else:
+               return
         return id_herb
     herb_menu = OptionMenu(frame_2, value_inside, *option_list, command=get_herb_name)
     herb_menu.config(width=46)
