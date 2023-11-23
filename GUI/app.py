@@ -63,10 +63,11 @@ def store_addnew_pycontainer():
 def cancel_addnew_container():
     main_window("<Button-1>")
 
-
+herb_name = StringVar()
 input_container_name = StringVar(value=" ")
+choice = StringVar()
 def addnew_pycontainer(event):
-    global tp, id_herb
+    global tp
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -89,16 +90,20 @@ def addnew_pycontainer(event):
     Label(frame_2, text="Pycontainer name", fg="red").grid(row=1, column=0, sticky="w",  pady=5, padx=173)
     Entry(frame_2, textvariable=input_container_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=173)
     all_herbs = db.get_all_herbs(conn=conn)
+    all_herbs.append({"name" :"Empty pycontainer"})
     option_list = []
     for herb in all_herbs:
         option_list.append(herb["name"])
     value_inside = StringVar(frame_2)
-    value_inside.set("Select a herb")
+    value_inside.set("Select option")
     def get_herb_name(*args):
-        global id_herb
+        global id_herb, herb_name
         for herb in all_herbs:
             if herb["name"] == value_inside.get():
                 id_herb = herb["id"]
+            else:
+                return
+            
         return id_herb
     herb_menu = OptionMenu(frame_2, value_inside, *option_list, command=get_herb_name) 
     herb_menu.config(width=46)
@@ -111,7 +116,6 @@ def addnew_pycontainer(event):
 
 # za gumb update/ažuriranje podataka o postojećim containerima
 edit_container_name = StringVar(value=" ")
-con_herb_id = StringVar(value="")
 def store_update_pycontainer():
     var_container_name.set(edit_container_name.get())
     def edit_container():
@@ -121,9 +125,9 @@ def store_update_pycontainer():
     details_pyflora_container("<Button-1>", var_container_id.get())
 def cancel_update_pycontainer():
     details_pyflora_container("<Button-1>", var_container_id.get())
-
+update_herb_name = StringVar(value="")
 def update_pycontainer(event):
-    global tp
+    global tp, choice
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -143,14 +147,30 @@ def update_pycontainer(event):
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, padx=160)
     edit_container_name.set(var_container_name.get())
-    #edit_container_id.set(var_container_id.get())
     Label(frame_2, text="Pycontainer", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w",pady=50, padx=50)
     Label(frame_2, text="Change Pycontainer name", fg="red").grid(row=1, column=0, sticky="w",  pady=5, padx=50)
     Entry(frame_2, textvariable=edit_container_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=50)
-    option_list = ["Herb 1", "Herb 2", "Herb 3", "Herb 4"]
+    
+    #if  var_container_herb_id.get() != None :
+        #herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, var_container_herb_id.get()) 
+        
+    #else:
+        
+    all_herbs = db.get_all_herbs(conn=conn)
+    option_list = ["Empty pycontainer"]
+    for herb in all_herbs:
+        option_list.append(herb["name"])
     value_inside = StringVar(frame_2)
-    value_inside.set("Select a herb")
-    herb_menu = OptionMenu(frame_2, value_inside, *option_list)
+    value_inside.set(choice)
+    def get_herb_name(*args):
+        global id_herb
+        for herb in all_herbs:
+            if herb["name"] == value_inside.get():
+                id_herb = herb["id"]
+            #else:
+              #  id_herb = None
+        return id_herb
+    herb_menu = OptionMenu(frame_2, value_inside, *option_list, command=get_herb_name)
     herb_menu.config(width=46)
     herb_menu.grid(row=2, column=1, sticky="w", padx=22)
     store_button =Button(frame_2, text="STORE", command=store_update_pycontainer, height=1, width=12)
@@ -379,7 +399,7 @@ def update_herb(event):
 def delete_button_pycontainer():
     answer = askyesno(title="confirmation", message="Are you sure that you want to proceed with delete action?")
     if answer:
-        db.delete_container(conn, var_container_herb_id.get()) 
+        db.delete_container(conn, var_container_id.get()) 
         main_window("<Button-1>")
     else:
        return
@@ -445,10 +465,10 @@ def details_pyflora_container(event, container_id):
     Button(frame_2, text="PIE", width=7, height=2, fg="green", bd="3").place(x=967, y=360)
     Button(frame_2, text="LINE", width=7, height=2, fg="green", bd="3").place(x=870, y=360)
     return event   
-
+status_of_container = StringVar(value="")
 #window sa listom pycontainera
 def main_window(event):
-    global tp, var_herb_image, container
+    global tp, var_herb_image, container, status_of_container
     tp.withdraw()
     tp = Toplevel()
     #width=tp.winfo_screenwidth()
@@ -488,14 +508,16 @@ def main_window(event):
            i = index + 1
         if container["herb_id"] == None:
             var_herb_image = "./pyflora/GUI/images/herb_photo.jpg"
+            status_of_container = "Empty PyContainer"
         else:
             herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, container["herb_id"]) 
             var_herb_image = image
+            status_of_container = "OK"
         canvas = Canvas(second_frame, width= 260, height= 125, bg="SpringGreen2")
         canvas.grid(row=i, column=j, sticky=NSEW)
         canvas.create_text(100, 20, text=container["name"], fill="black",anchor="w", font=('Helvetica 10 bold'))
         canvas.create_text(115, 80, text = "Status",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
-        canvas.create_text(150, 90, text = "EMPTY pycontainer",fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
+        canvas.create_text(150, 90, text = status_of_container,fill="black",anchor=N,justify="left", font=('Helvetica 10 bold') )
         img = Image.open(var_herb_image).resize((90,130))
         images.append(ImageTk.PhotoImage(img))
         canvas.create_image(0,0, anchor=NW, image=images[-1])

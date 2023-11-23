@@ -218,11 +218,11 @@ def delete_container(conn, id):
     except sqlite3.Error as err:
         print(f"ERROR: {err}")
 
-def update_container(conn, name, container_id):
+def update_container(conn, name, container_id, herb_id=None):
     try:
         cursor = conn.cursor()
 
-        cursor.execute(update_container_query, (name, container_id))
+        cursor.execute(update_container_query, (name, container_id, herb_id))
    
         conn.commit()  
        
