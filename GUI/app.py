@@ -48,7 +48,7 @@ def login_window():
     
 
 # za pohranu/odustanak od dodavanja novih pycontainera i povrat na window sa listom pycontainera-main window
-id_herb = None
+
 def store_addnew_pycontainer():
     global id_herb
     def remove(string):
@@ -63,9 +63,10 @@ def store_addnew_pycontainer():
 def cancel_addnew_container():
     main_window("<Button-1>")
 
-herb_name = StringVar()
+
 input_container_name = StringVar(value=" ")
-choice = StringVar()
+id_herb = StringVar(value="")
+no_id_herb= StringVar(value="")
 def addnew_pycontainer(event):
     global tp
     tp.withdraw()
@@ -90,20 +91,21 @@ def addnew_pycontainer(event):
     Label(frame_2, text="Pycontainer name", fg="red").grid(row=1, column=0, sticky="w",  pady=5, padx=173)
     Entry(frame_2, textvariable=input_container_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=173)
     all_herbs = db.get_all_herbs(conn=conn)
-    all_herbs.append({"name" :"Empty pycontainer"})
+    all_herbs.append({"id": [0], "name" :"Empty pycontainer"})
     option_list = []
     for herb in all_herbs:
         option_list.append(herb["name"])
     value_inside = StringVar(frame_2)
     value_inside.set("Select option")
     def get_herb_name(*args):
-        global id_herb, herb_name
+        global id_herb, no_id_herb
         for herb in all_herbs:
             if herb["name"] == value_inside.get():
                 id_herb = herb["id"]
-            else:
-                return 
-        return id_herb
+            #if herb["name"] == "Empty pycontainer":
+               # no_id_herb = herb["name"]
+                
+        return id_herb# no_id_herb
     herb_menu = OptionMenu(frame_2, value_inside, *option_list, command=get_herb_name) 
     herb_menu.config(width=46)
     herb_menu.grid(row=2, column=1, sticky="w")
@@ -114,19 +116,21 @@ def addnew_pycontainer(event):
     return event
 
 # za gumb update/ažuriranje podataka o postojećim containerima
-edit_container_name = StringVar(value=" ")
+
 def store_update_pycontainer():
     var_container_name.set(edit_container_name.get())
     def edit_container():
-        db.update_container(conn, var_container_name.get(),var_container_id.get()) # još trebam herb_id ,  edit_container_id.get(),
-    
+        db.update_container(conn, var_container_name.get(), id_herb.get()) # var_container_id.get(),
     edit_container()
     details_pyflora_container("<Button-1>", var_container_id.get())
+
 def cancel_update_pycontainer():
     details_pyflora_container("<Button-1>", var_container_id.get())
-update_herb_name = StringVar(value="")
+edit_container_name = StringVar(value=" ")
+edit_container_id = StringVar(value="")
+edit_con_herb_id = StringVar(value="")
 def update_pycontainer(event):
-    global tp, choice
+    global tp, id_herb, no_id_herb
     tp.withdraw()
     tp = Toplevel()
     width=tp.winfo_screenwidth()
@@ -146,22 +150,28 @@ def update_pycontainer(event):
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True, padx=160)
     edit_container_name.set(var_container_name.get())
+    edit_container_id.set(var_container_id.get())
+    
+    
+    if var_container_herb_id.get() != None:
+        edit_con_herb_id.set(var_container_herb_id.get())
+        herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, edit_con_herb_id.get()) 
+        herb_name = herb_name
+    else:
+        herb_name = "Empty pycontainer"
+        
+
     Label(frame_2, text="Pycontainer", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w",pady=50, padx=50)
     Label(frame_2, text="Change Pycontainer name", fg="red").grid(row=1, column=0, sticky="w",  pady=5, padx=50)
     Entry(frame_2, textvariable=edit_container_name,  background="white", fg="black", width=50).grid(row=2, column=0, pady=5, padx=50)
     
-    #if  var_container_herb_id.get() != None :
-        #herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, var_container_herb_id.get()) 
-        
-    #else:
-        
     all_herbs = db.get_all_herbs(conn=conn)
-    all_herbs.append({"name" :"Empty pycontainer"})
+    all_herbs.append({"id": [0], "name" :"Empty pycontainer"})
     option_list = []
     for herb in all_herbs:
         option_list.append(herb["name"])
     value_inside = StringVar(frame_2)
-    value_inside.set(choice)
+    value_inside.set(herb_name)
     def get_herb_name(*args):
         global id_herb
         for herb in all_herbs:
