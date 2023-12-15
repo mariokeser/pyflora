@@ -119,9 +119,7 @@ def addnew_pycontainer(event):
 
 def store_update_pycontainer():
     var_container_name.set(edit_container_name.get())
-    def edit_container():
-        db.update_container(conn, var_container_name.get(), id_herb.get()) # var_container_id.get(),
-    edit_container()
+    db.update_container(conn, name=var_container_name.get(), container_id=var_container_id.get(), herb_id=id_herb) # var_container_id.get(),
     details_pyflora_container("<Button-1>", var_container_id.get())
 
 def cancel_update_pycontainer():
@@ -153,10 +151,9 @@ def update_pycontainer(event):
     edit_container_id.set(var_container_id.get())
     
     
-    if var_container_herb_id.get() != None:
+    if var_container_herb_id.get() != "None":
         edit_con_herb_id.set(var_container_herb_id.get())
-        herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, edit_con_herb_id.get()) 
-        herb_name = herb_name
+        herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, edit_con_herb_id.get())
     else:
         herb_name = "Empty pycontainer"
         
@@ -172,15 +169,11 @@ def update_pycontainer(event):
         option_list.append(herb["name"])
     value_inside = StringVar(frame_2)
     value_inside.set(herb_name)
-    def get_herb_name(*args):
+    def get_herb_id(*args):
         global id_herb
-        for herb in all_herbs:
-            if herb["name"] == value_inside.get():
-                id_herb = herb["id"]
-            else:
-               return
+        id_herb = db.get_herb_id_by_name(conn, name=value_inside.get())
         return id_herb
-    herb_menu = OptionMenu(frame_2, value_inside, *option_list, command=get_herb_name)
+    herb_menu = OptionMenu(frame_2, value_inside, *option_list, command=get_herb_id)
     herb_menu.config(width=46)
     herb_menu.grid(row=2, column=1, sticky="w", padx=22)
     store_button =Button(frame_2, text="STORE", command=store_update_pycontainer, height=1, width=12)

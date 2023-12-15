@@ -37,11 +37,11 @@ create_containers_query = """CREATE TABLE IF NOT EXISTS Containers(
 
 add_new_containers_query = """INSERT INTO Containers (name, herb_id) VALUES (?, ?);"""
 
-select_all_containers_query = """SELECT * FROM Containers"""
+select_all_containers_query = """SELECT * FROM Containers WHERE herb_id NOTNULL"""
+select_all_empty_containers_query = """SELECT * FROM Containers WHERE herb_id IS NULL"""
 select_container_query = """SELECT * FROM Containers WHERE id = ?;"""
 delete_container_query = """DELETE FROM Containers WHERE id = ?;"""
-update_container_query = """UPDATE Containers SET name = ?
-WHERE id = ?;"""
+update_container_query = """UPDATE Containers SET name = ?, herb_id = ? WHERE id = ?;"""
 
 
 create_herbs_query = """CREATE TABLE IF NOT EXISTS Herbs(
@@ -63,6 +63,7 @@ VALUES (?,?,?,?,?,?,?,?,?);"""
 
 
 select_herb_query = """SELECT * FROM Herbs WHERE id = ?;"""
+select_herb_by_name_query = """SELECT * FROM Herbs WHERE name = ?;"""
 select_all_herbs_query = """SELECT * FROM Herbs"""
 delete_herb_query = """DELETE FROM Herbs WHERE id = ?;"""
 update_herb_query = """UPDATE Herbs SET name = ?, soil_moisture = ?, luminosity = ?, air_temperature = ?, ph_value = ?, features = ?, herb_height = ?, herb_width = ?, image = ?
@@ -190,6 +191,22 @@ def get_all_containers(conn):
     except sqlite3.Error as err: 
         print(f"ERROR: {err}")
 
+def get_all_empty_containers(conn):
+    try:
+        cursor = conn.cursor()
+        cursor.execute(select_all_empty_containers_query)
+        record = cursor.fetchall()
+        result = []
+        
+        if record != None:
+            for item in record:
+                result.append({"id": item[0], "name": item[1], "herb_id": item[2]})
+            return result     
+        else:
+            cursor.close()
+    except sqlite3.Error as err: 
+        print(f"ERROR: {err}")
+
 def get_container(conn, id):
     try:
         cursor = conn.cursor()
@@ -222,7 +239,7 @@ def update_container(conn, name, container_id, herb_id=None):
     try:
         cursor = conn.cursor()
 
-        cursor.execute(update_container_query, (name, container_id, herb_id))
+        cursor.execute(update_container_query, (name, herb_id, container_id))
    
         conn.commit()  
        
@@ -270,7 +287,7 @@ def get_herb(conn, id):
         record = cursor.fetchone()
         
         if record != None:
-            return (record[0], record[1],record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9]) 
+            return (record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9])
         else:
             cursor.close()
     except sqlite3.Error as err: 
@@ -306,4 +323,17 @@ def update_herb(conn, name, soil_moisture, luminosity, air_temperature, ph_value
         print(f"ERROR: {err}")
         
     finally:
-          cursor.close() 
+          cursor.close()
+
+def get_herb_id_by_name(conn, name):
+    try:
+        cursor = conn.cursor()
+        cursor.execute(select_herb_by_name_query, (name,))
+        record = cursor.fetchone()
+        
+        if record != None:
+            return record[0] 
+        else:
+            cursor.close()
+    except sqlite3.Error as err: 
+        print(f"ERROR: {err}")
