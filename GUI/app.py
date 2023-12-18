@@ -66,7 +66,6 @@ def cancel_addnew_container():
 
 input_container_name = StringVar(value=" ")
 id_herb = StringVar(value="")
-no_id_herb= StringVar(value="")
 def addnew_pycontainer(event):
     global tp
     tp.withdraw()
@@ -98,14 +97,11 @@ def addnew_pycontainer(event):
     value_inside = StringVar(frame_2)
     value_inside.set("Select option")
     def get_herb_name(*args):
-        global id_herb, no_id_herb
+        global id_herb
         for herb in all_herbs:
             if herb["name"] == value_inside.get():
-                id_herb = herb["id"]
-            #if herb["name"] == "Empty pycontainer":
-               # no_id_herb = herb["name"]
-                
-        return id_herb# no_id_herb
+                id_herb = herb["id"]     
+        return id_herb
     herb_menu = OptionMenu(frame_2, value_inside, *option_list, command=get_herb_name) 
     herb_menu.config(width=46)
     herb_menu.grid(row=2, column=1, sticky="w")
@@ -119,7 +115,7 @@ def addnew_pycontainer(event):
 
 def store_update_pycontainer():
     var_container_name.set(edit_container_name.get())
-    db.update_container(conn, name=var_container_name.get(), container_id=var_container_id.get(), herb_id=id_herb) # var_container_id.get(),
+    db.update_container(conn, name=var_container_name.get(), container_id=var_container_id.get(), herb_id=id_herb)
     details_pyflora_container("<Button-1>", var_container_id.get())
 
 def cancel_update_pycontainer():
