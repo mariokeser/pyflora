@@ -36,9 +36,15 @@ create_containers_query = """CREATE TABLE IF NOT EXISTS Containers(
 );"""
 
 add_new_containers_query = """INSERT INTO Containers (name, herb_id) VALUES (?, ?);"""
-
-select_all_containers_query = """SELECT * FROM Containers WHERE herb_id NOTNULL"""
-select_all_empty_containers_query = """SELECT * FROM Containers WHERE herb_id IS NULL"""
+select_all_containers_sorted_query = """
+    SELECT * FROM Containers
+    ORDER BY 
+        CASE
+            WHEN herb_id IS NULL THEN 2
+            ELSE 1
+        END,
+        herb_id
+"""
 select_container_query = """SELECT * FROM Containers WHERE id = ?;"""
 delete_container_query = """DELETE FROM Containers WHERE id = ?;"""
 update_container_query = """UPDATE Containers SET name = ?, herb_id = ? WHERE id = ?;"""
@@ -178,7 +184,7 @@ def add_containers(conn, name, herb_id = None):
 def get_all_containers(conn):
     try:
         cursor = conn.cursor()
-        cursor.execute(select_all_containers_query)
+        cursor.execute(select_all_containers_sorted_query)
         record = cursor.fetchall()
         result = []
         
