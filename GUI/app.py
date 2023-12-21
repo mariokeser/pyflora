@@ -430,13 +430,18 @@ def details_pyflora_container(event, container_id):
     l2.pack(side=LEFT, expand=True)
     l2.bind("<Button-1>", herbs_window)
     Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)
-    frame_2 = Label(tp)
-    frame_2.pack(fill=BOTH, expand=True, padx=100)
     containers_id, container_name, container_herb_id = db.get_container(conn, container_id)
     var_container_id.set(containers_id)
     var_container_name.set(container_name)
     var_container_herb_id.set(container_herb_id)
+    sync_button = Button(tp, text = "SYNC", fg = "green", width=12)
+    sync_button.pack(anchor=E, side=TOP, pady=20, padx=173)
+    if container_herb_id == None:
+        sync_button.config(state="disable")
+    else:
+        sync_button.config(state="normal")
+    frame_2 = Label(tp)
+    frame_2.pack(fill=BOTH, expand=True, padx=100)
     if container_herb_id == None:
         var_herb_image = "./pyflora/GUI/images/herb_photo.jpg"
     else:
@@ -558,9 +563,8 @@ def details_herb(event, herb_id):
     l2.pack(side=LEFT, expand=True)
     l2.bind("<Button-1>", herbs_window)
     Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E, side=TOP,pady=20, padx=173)
     frame_2 = Label(tp)
-    frame_2.pack(fill=BOTH, expand=True, pady=100, padx=43)
+    frame_2.pack(fill=BOTH, expand=True, pady=170, padx=43)
     herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(conn, herb_id) 
     var_herb_id.set(herbs_id)
     var_herb_name.set(herb_name)
@@ -604,9 +608,8 @@ def herbs_window(event):
     l2=Label(frame, text="Herbs", font=("Arial", 23), fg="green")
     l2.pack(side=LEFT, expand=True)
     Button(frame, text="MY PROFILE",fg="green", command=my_profile,width=12, height=1).pack(side=LEFT, expand=True)
-    Button(tp, text = "SYNC", fg = "green", width=12).pack(anchor=E,side=TOP, pady=20, padx=173)
     frame_2 = Frame(tp)
-    frame_2.pack(fill=BOTH, expand=True)
+    frame_2.pack(fill=BOTH, expand=True, pady=70)
     my_canvas = Canvas(frame_2)
     my_canvas.pack(side="left", fill="both", expand=True, padx=450)
     my_scrollbar = Scrollbar(frame_2, orient=VERTICAL, command=my_canvas.yview)
