@@ -197,22 +197,6 @@ def get_all_containers(conn):
     except sqlite3.Error as err: 
         print(f"ERROR: {err}")
 
-def get_all_empty_containers(conn):
-    try:
-        cursor = conn.cursor()
-        cursor.execute(select_all_empty_containers_query)
-        record = cursor.fetchall()
-        result = []
-        
-        if record != None:
-            for item in record:
-                result.append({"id": item[0], "name": item[1], "herb_id": item[2]})
-            return result     
-        else:
-            cursor.close()
-    except sqlite3.Error as err: 
-        print(f"ERROR: {err}")
-
 def get_container(conn, id):
     try:
         cursor = conn.cursor()
