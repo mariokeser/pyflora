@@ -4,12 +4,15 @@ from tkinter.messagebox import askyesno
 from PIL import Image, ImageTk 
 from repo import db
 
+
+
 #konekcija na bazu podataka
 conn = db.get_connection("./pyflora/GUI/data/Pyflora.db")
 #root GUI-a
 root = Tk()
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
+
 
 #prvi window za login
 def login_window(): 
@@ -410,6 +413,8 @@ def update_pycontainers():
 var_container_id = StringVar(value="")
 var_container_name = StringVar(value="")
 var_container_herb_id = StringVar(value="")
+def sync_sensors():
+    pass
 
 def details_pyflora_container(event, container_id):
     global tp, var_herb_image
@@ -434,7 +439,7 @@ def details_pyflora_container(event, container_id):
     var_container_id.set(containers_id)
     var_container_name.set(container_name)
     var_container_herb_id.set(container_herb_id)
-    sync_button = Button(tp, text = "SYNC", fg = "green", width=12)
+    sync_button = Button(tp, text = "SYNC", fg = "green", width=12, command=sync_sensors)
     sync_button.pack(anchor=E, side=TOP, pady=20, padx=173)
     if container_herb_id == None:
         sync_button.config(state="disable")
@@ -455,14 +460,23 @@ def details_pyflora_container(event, container_id):
     img = Image.open(var_herb_image).resize((305,305))
     img_obj = ImageTk.PhotoImage(img)
     canvas.create_image((0,0),image=img_obj, anchor=NW)
+    sensor_soil_moisture_stringvar = StringVar(value="")
+    sensor_ph_value_stringvar = StringVar(value="")
+    sensor_luminosity_stringvar = StringVar(value="")
+    sensor_temperature_stringvar = StringVar(value="")
+    sensor_soil_moisture_stringvar.set(str(db.get_humidity(conn)) + " %")
+    sensor_ph_value_stringvar.set(str(db.get_ph_value(conn)) + " pH")
+    sensor_luminosity_stringvar.set(str(db.get_luminosity(conn)) + " lm")
+    sensor_temperature_stringvar.set(str(db.get_temperature(conn)) + " °C")
+
     Label(frame_2, text="Sensor value: soil moisture", fg="red").grid(row=2, column=0, sticky=W, padx=136)
-    Label(frame_2, text="Last activity", fg="green").grid(row=3, column=0, sticky=W, padx=136)
+    Label(frame_2, textvariable=sensor_soil_moisture_stringvar, fg="green").grid(row=3, column=0, sticky=W, padx=136)
     Label(frame_2, text="Sensor value: ph value and salinity of the soil", fg="red").grid(row=4, column=0, sticky=W, padx=136)
-    Label(frame_2, text="Last activity", fg="green").grid(row=5, column=0, sticky=W, padx=136)
+    Label(frame_2, textvariable=sensor_ph_value_stringvar, fg="green").grid(row=5, column=0, sticky=W, padx=136)
     Label(frame_2, text="Sensor value: luminosity", fg="red").grid(row=6, column=0, sticky=W, padx=136)
-    Label(frame_2, text="Last activity", fg="green").grid(row=7, column=0, sticky=W, padx=136)
+    Label(frame_2, textvariable=sensor_luminosity_stringvar, fg="green").grid(row=7, column=0, sticky=W, padx=136)
     Label(frame_2, text="Sensor value:air temperature", fg="red").grid(row=8, column=0, sticky=W, padx=136)
-    Label(frame_2, text="Last activity", fg="green").grid(row=9, column=0, sticky=W, padx=136)
+    Label(frame_2, textvariable=sensor_temperature_stringvar, fg="green").grid(row=9, column=0, sticky=W, padx=136)
     canvas_graph = Canvas(frame_2, width=1020, height=405, bg="gray")
     canvas_graph.grid(row=10, column=0, columnspan=2, sticky="w", padx=137)
     Button(frame_2, text="HISTO", width=7, height=2, fg="green", bd="3").place(x=1063,y=360)
@@ -531,7 +545,7 @@ def main_window(event):
     canvas.create_text(130, 40, text="+", fill="black", anchor=CENTER,font=("Helvetica 30 bold"))
     canvas.create_text(130, 85, text="Add new\nPycontainer", fill="black", anchor=CENTER,font=("Helvetica 15 bold"))
     canvas.bind("<Button-1>",addnew_pycontainer )
-    Button(second_frame, text="Empty   PyFlora   Containers", fg="green", width=55).grid(row=container["id"] +1, column=0, columnspan=2)
+    #Button(second_frame, text="Empty   PyFlora   Containers", fg="green", width=55).grid(row=container["id"] +1, column=0, columnspan=2)
     return event
 
 
