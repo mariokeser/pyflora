@@ -1,5 +1,5 @@
-import repo_1 
-import gui_1 
+import repo_1 , gui_1
+
 
 
 def main():

@@ -6,6 +6,7 @@ from repo import db
 
 
 
+
 #konekcija na bazu podataka
 conn = db.get_connection("./pyflora/GUI/data/Pyflora.db")
 #root GUI-a
@@ -414,12 +415,13 @@ var_container_id = StringVar(value="")
 var_container_name = StringVar(value="")
 var_container_herb_id = StringVar(value="")
 def sync_sensors():
-    pass
+    db.App(conn) 
+   
+     
 
 def details_pyflora_container(event, container_id):
     global tp, var_herb_image
     tp.withdraw()
-    global photo_filename
     global img_obj
     tp = Toplevel()
     width=tp.winfo_screenwidth()
