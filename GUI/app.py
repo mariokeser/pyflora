@@ -67,7 +67,7 @@ def store_addnew_pycontainer():
         return string.replace(" ", "")
 
     if remove(input_container_name.get()) == "":
-        messagebox.showerror("Error!", "When creating pycontainer - name is mandatory!")
+        messagebox.showerror("Error!", "When creating a container - name is mandatory!")
         return
     else:
         db.add_containers(conn=conn, name=input_container_name.get(), herb_id=id_herb)
@@ -103,13 +103,13 @@ def addnew_pycontainer(event):
     Button(tp, text="SYNC", fg="green", width=12).pack(anchor=E, side=TOP, pady=20, padx=173)
     frame_2 = Label(tp)
     frame_2.pack(fill=BOTH, expand=True)
-    Label(frame_2, text="Pycontainer", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w", pady=50,
+    Label(frame_2, text="Container", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w", pady=50,
                                                                             padx=173)
-    Label(frame_2, text="Pycontainer name", fg="red").grid(row=1, column=0, sticky="w", pady=5, padx=173)
+    Label(frame_2, text="Container name", fg="red").grid(row=1, column=0, sticky="w", pady=5, padx=173)
     Entry(frame_2, textvariable=input_container_name, background="white", fg="black", width=50).grid(row=2, column=0,
                                                                                                      pady=5, padx=173)
     all_herbs = db.get_all_herbs(conn=conn)
-    all_herbs.append({"id": [0], "name": "Empty pycontainer"})
+    all_herbs.append({"id": [0], "name": "Empty Container"})
     option_list = []
     for herb in all_herbs:
         option_list.append(herb["name"])
@@ -178,16 +178,16 @@ def update_pycontainer(event):
         herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(
             conn, edit_con_herb_id.get())
     else:
-        herb_name = "Empty pycontainer"
+        herb_name = "Empty Container"
 
-    Label(frame_2, text="Pycontainer", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w", pady=50,
+    Label(frame_2, text="Container", fg="green", font=("Arial", 20)).grid(row=0, column=0, sticky="w", pady=50,
                                                                             padx=50)
-    Label(frame_2, text="Change Pycontainer name", fg="red").grid(row=1, column=0, sticky="w", pady=5, padx=50)
+    Label(frame_2, text="Change Container name", fg="red").grid(row=1, column=0, sticky="w", pady=5, padx=50)
     Entry(frame_2, textvariable=edit_container_name, background="white", fg="black", width=50).grid(row=2, column=0,
                                                                                                     pady=5, padx=50)
 
     all_herbs = db.get_all_herbs(conn=conn)
-    all_herbs.append({"id": [0], "name": "Empty pycontainer"})
+    all_herbs.append({"id": [0], "name": "Empty Container"})
     option_list = []
     for herb in all_herbs:
         option_list.append(herb["name"])
@@ -261,7 +261,7 @@ input_ph_value = StringVar(value=" ")
 input_features = StringVar(value=" ")
 input_herb_height = StringVar(value=" ")
 input_herb_width = StringVar(value=" ")
-input_herb_photo = os.path.join(script_directory, "images", "herb_photo.jpg")
+input_herb_photo = os.path.join(script_directory, "repo", "images", "herb_photo.jpg")
 
 
 def store_addnew_herb():  # za dodavanje u bazu db.add_herbs-radi, isključena je samo zbog isprobavanja drugih funkcija
@@ -602,7 +602,7 @@ def main_window(event):
             i = index + 1
         if container["herb_id"] is None:
             var_herb_image = input_herb_photo
-            status_of_container = "Empty PyContainer"
+            status_of_container = "Empty Container"
         else:
             herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(
                 conn, container["herb_id"])
@@ -610,10 +610,10 @@ def main_window(event):
             status_of_container = "OK"
         canvas = Canvas(second_frame, width=260, height=125, bg="SpringGreen2")
         canvas.grid(row=i, column=j, sticky=NSEW)
-        canvas.create_text(100, 20, text=container["name"], fill="black", anchor="w", font=('Helvetica 10 bold'))
-        canvas.create_text(115, 80, text="Status", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
+        canvas.create_text(100, 20, text=container["name"], fill="black", anchor="w", font='Helvetica 10 bold')
+        canvas.create_text(115, 80, text="Status", fill="black", anchor=N, justify="left", font='Helvetica 10 bold')
         canvas.create_text(150, 90, text=status_of_container, fill="black", anchor=N, justify="left",
-                           font=('Helvetica 10 bold'))
+                           font='Helvetica 10 bold')
         img = Image.open(var_herb_image).resize((90, 130))
         images.append(ImageTk.PhotoImage(img))
         canvas.create_image(0, 0, anchor=NW, image=images[-1])
@@ -621,8 +621,8 @@ def main_window(event):
                     lambda event, container_id=container["id"]: details_pyflora_container(event, container_id))
     canvas = Canvas(second_frame, width=260, height=125, bg="SpringGreen2")
     canvas.grid(row=0, column=0)
-    canvas.create_text(130, 40, text="+", fill="black", anchor=CENTER, font=("Helvetica 30 bold"))
-    canvas.create_text(130, 85, text="Add new\nPycontainer", fill="black", anchor=CENTER, font=("Helvetica 15 bold"))
+    canvas.create_text(130, 40, text="+", fill="black", anchor=CENTER, font="Helvetica 30 bold")
+    canvas.create_text(130, 85, text="Add new\nContainer", fill="black", anchor=CENTER, font="Helvetica 15 bold")
     canvas.bind("<Button-1>", addnew_pycontainer)
     # Button(second_frame, text="Empty   PyFlora   Containers", fg="green", width=55).grid(row=container["id"] +1, column=0, columnspan=2)
     return event
@@ -733,13 +733,13 @@ def herbs_window(event):
         canvas.grid(row=i, column=j, sticky=NSEW)
         canvas.create_text(100, 20, text=herb["name"], fill="black", anchor="w",
                            font='Helvetica 20 bold')  # var_herb_name.get()
-        canvas.create_text(140, 50, text="Features", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
+        canvas.create_text(140, 50, text="Features", fill="black", anchor=N, justify="left", font='Helvetica 10 bold')
         canvas.create_text(140, 60, text=herb["features"], fill="black", anchor=N, justify="left",
                            font='Helvetica 10 bold')  # var_herb_features.get()
-        canvas.create_text(133, 70, text="Height", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
+        canvas.create_text(133, 70, text="Height", fill="black", anchor=N, justify="left", font='Helvetica 10 bold')
         canvas.create_text(140, 80, text=herb["herb_height"], fill="black", anchor=N, justify="left",
                            font='Helvetica 10 bold')  # var_herb_height.get()
-        canvas.create_text(133, 90, text="Width", fill="black", anchor=N, justify="left", font=('Helvetica 10 bold'))
+        canvas.create_text(133, 90, text="Width", fill="black", anchor=N, justify="left", font='Helvetica 10 bold')
         canvas.create_text(140, 100, text=herb["herb_width"], fill="black", anchor=N, justify="left",
                            font='Helvetica 10 bold')  # var_herb_width.get()
         small_img = Image.open(herb["image"]).resize((100, 140))
@@ -748,8 +748,8 @@ def herbs_window(event):
         canvas.bind("<Button-1>", lambda event, herb_id=herb["id"]: details_herb(event, herb_id))
     canvas = Canvas(second_frame, width=260, height=125, bg="SpringGreen2")
     canvas.grid(row=0, column=0, sticky=NSEW)
-    canvas.create_text(130, 45, text="+", fill="black", anchor=CENTER, font=("Helvetica 30 bold"))
-    canvas.create_text(130, 85, text="Add new herb", fill="black", anchor=CENTER, font=("Helvetica 15 bold"))
+    canvas.create_text(130, 45, text="+", fill="black", anchor=CENTER, font="Helvetica 30 bold")
+    canvas.create_text(130, 85, text="Add new herb", fill="black", anchor=CENTER, font="Helvetica 15 bold")
     canvas.bind("<Button-1>", addnew_herb)
     return event
 

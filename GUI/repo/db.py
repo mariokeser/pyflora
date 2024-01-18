@@ -1,6 +1,6 @@
 import datetime
+import os
 import sqlite3
-from tkinter import *
 
 # query za kreiranje tablice admin
 create_table_query = """CREATE TABLE IF NOT EXISTS Users(
@@ -140,7 +140,12 @@ def get_connection(db_name):
         conn.commit()
 
         if login(conn, "admin") is None:
+            script_directory = os.path.dirname(os.path.realpath(__file__))
+            herb_image_path = os.path.join(script_directory, "images", "BASIL.jpg")
             add_user(conn, "Mario", "Keser", "admin", "admin")
+            add_herbs(conn, "Basil", 70, 3000, 23, 6, "test",
+                      30, 15, herb_image_path)
+            add_containers(conn, "Basil Container", 1)
 
         cursor.close()
 
