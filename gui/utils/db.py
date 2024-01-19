@@ -2,7 +2,7 @@ import datetime
 import os
 import sqlite3
 
-# query za kreiranje tablice admin
+
 create_table_query = """CREATE TABLE IF NOT EXISTS Users(
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
@@ -11,19 +11,19 @@ create_table_query = """CREATE TABLE IF NOT EXISTS Users(
     password TEXT NOT NULL
 );"""
 
-# query za dohvaćanje usera, jednoga, admina
+
 select_query = """SELECT  username, password FROM Users
 WHERE username = ?;"""
 
-# query za prikazivanje podataka u profilu
+
 select_query_profile = """SELECT name, lastname, username, password FROM Users
 WHERE username = ?;"""
 
-# query za dodavanje usera s
+
 insert_query = """INSERT INTO Users (name,lastname, username, password)
 VALUES (?, ?, ?,?);"""
 
-# query za promjenu podataka u profilu
+
 update_query_profile = """UPDATE Users SET name = ?, lastname = ?, password = ?
 WHERE username = ?;"""
 
@@ -78,13 +78,13 @@ create_temperature_table_query = """CREATE TABLE IF NOT EXISTS temperature (
     read_time DATETIME NOT NULL,
     value FLOAT NOT NULL
 )"""
-# query za ph value
+
 create_ph_value_table_query = """CREATE TABLE IF NOT EXISTS ph_value (
     id INTEGER PRIMARY KEY,
     read_time DATETIME NOT NULL,
     value FLOAT NOT NULL
 )"""
-# query za tablicu za humidity, istakao i prethdne
+
 create_humidity_table_query = """CREATE TABLE IF NOT EXISTS humidity (
     id INTEGER PRIMARY KEY,
     read_time DATETIME NOT NULL,
@@ -99,19 +99,20 @@ value INTEGER NOT NULL
 
 insert_temperature_query = """INSERT INTO temperature (read_time, value)
 VALUES (?, ?)"""
-# query za insert ph value
+
 insert_ph_value_query = """INSERT INTO ph_value (read_time, value)
 VALUES (?, ?)"""
-# query za insert humidity, isto kao ovo prije
+
 insert_humidity_query = """INSERT INTO humidity (read_time, value)
 VALUES (?, ?)"""
+
 insert_luminosity_query = """INSERT INTO luminosity (read_time, value)
 VALUES (?, ?)"""
 
 select_temperature_query = """SELECT  value FROM temperature
 ORDER BY read_time DESC
 LIMIT 1"""
-# select za ph value
+
 select_ph_value_query = """SELECT value FROM ph_value
 ORDER BY read_time DESC
 LIMIT 1"""
@@ -119,8 +120,8 @@ LIMIT 1"""
 select_humidity_query = """SELECT value FROM humidity
 ORDER BY read_time DESC
 LIMIT 1"""
-select_luminosity_query = """SELECT value FROM luminosity
 
+select_luminosity_query = """SELECT value FROM luminosity
 ORDER BY read_time DESC
 LIMIT 1"""
 

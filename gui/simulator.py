@@ -2,7 +2,7 @@ import os
 from tkinter import *
 from tkinter import Tk, Label, Frame
 
-from GUI.repo import db
+from gui.utils import db
 
 
 class SimulatorApp(Tk):

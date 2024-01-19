@@ -4,14 +4,16 @@ from tkinter import *
 from tkinter import Tk, Toplevel, Label, LabelFrame, Button, Entry, Frame, messagebox, ttk, Canvas, filedialog
 from tkinter.messagebox import askyesno
 from PIL import Image, ImageTk
-from repo import db
+
+from gui.utils.helpers import get_container_status
+from utils import db
 
 # Connect to a database
 script_directory = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_directory, "data", "Pyflora.db")
 conn = db.get_connection(db_path)
 
-# root for GUI
+# root for gui
 root = Tk()
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
@@ -261,7 +263,7 @@ input_ph_value = StringVar(value=" ")
 input_features = StringVar(value=" ")
 input_herb_height = StringVar(value=" ")
 input_herb_width = StringVar(value=" ")
-input_herb_photo = os.path.join(script_directory, "repo", "images", "herb_photo.jpg")
+input_herb_photo = os.path.join(script_directory, "utils", "images", "herb_photo.jpg")
 
 
 def store_addnew_herb():  # za dodavanje u bazu db.add_herbs-radi, isključena je samo zbog isprobavanja drugih funkcija
@@ -560,13 +562,10 @@ def details_pyflora_container(event, container_id):
 status_of_container = StringVar(value="")
 
 
-# window sa listom pycontainera
 def main_window(event):
     global tp, var_herb_image, container, status_of_container
     tp.withdraw()
     tp = Toplevel()
-    # width=tp.winfo_screenwidth()
-    # height=tp.winfo_screenheight()
     tp.attributes("-fullscreen", False)  # geometry("%dx%d" %(width, height))
     tp.title("")
     global img_obj
@@ -607,13 +606,15 @@ def main_window(event):
             herbs_id, herb_name, soil_moisture, luminosity, air_temperature, ph_value, features, herb_height, herb_width, image = db.get_herb(
                 conn, container["herb_id"])
             var_herb_image = image
-            status_of_container = "OK"
+            status_of_container = get_container_status(soil_moisture=soil_moisture,
+                                                       luminosity=luminosity,
+                                                       air_temperature=air_temperature,
+                                                       ph_value=ph_value)
         canvas = Canvas(second_frame, width=260, height=125, bg="SpringGreen2")
         canvas.grid(row=i, column=j, sticky=NSEW)
-        canvas.create_text(100, 20, text=container["name"], fill="black", anchor="w", font='Helvetica 10 bold')
-        canvas.create_text(115, 80, text="Status", fill="black", anchor=N, justify="left", font='Helvetica 10 bold')
-        canvas.create_text(150, 90, text=status_of_container, fill="black", anchor=N, justify="left",
-                           font='Helvetica 10 bold')
+        canvas.create_text(100, 20, text=container["name"], fill="black", anchor="w", font='Helvetica 13 bold')
+        canvas.create_text(115, 50, text="Status:", fill="black", anchor=N, justify="left", font='Helvetica 10 bold')
+        canvas.create_text(150, 60, text=status_of_container, fill="black", anchor=N, justify="left", font='Helvetica 10 bold')
         img = Image.open(var_herb_image).resize((90, 130))
         images.append(ImageTk.PhotoImage(img))
         canvas.create_image(0, 0, anchor=NW, image=images[-1])
@@ -624,7 +625,6 @@ def main_window(event):
     canvas.create_text(130, 40, text="+", fill="black", anchor=CENTER, font="Helvetica 30 bold")
     canvas.create_text(130, 85, text="Add new\nContainer", fill="black", anchor=CENTER, font="Helvetica 15 bold")
     canvas.bind("<Button-1>", addnew_pycontainer)
-    # Button(second_frame, text="Empty   PyFlora   Containers", fg="green", width=55).grid(row=container["id"] +1, column=0, columnspan=2)
     return event
 
 
@@ -894,7 +894,7 @@ def my_profile():
     new_root.mainloop()
 
 
-# Starting the app
+# Starting the gui
 if __name__ == '__main__':
     login_window()
 
