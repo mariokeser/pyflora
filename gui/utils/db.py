@@ -126,6 +126,22 @@ ORDER BY read_time DESC
 LIMIT 1"""
 
 
+select_graph_temperature_query = """SELECT value, read_time FROM temperature
+ORDER BY read_time DESC
+LIMIT 15"""
+
+select_graph_ph_value_query = """SELECT value, read_time FROM ph_value
+ORDER BY read_time DESC
+LIMIT 15"""
+
+select_graph_humidity_query = """SELECT value, read_time FROM humidity
+ORDER BY read_time DESC
+LIMIT 15"""
+
+select_graph_luminosity_query = """SELECT value, read_time FROM luminosity
+ORDER BY read_time DESC
+LIMIT 15"""
+
 # konekcija na bazu
 def get_connection(db_name):
     try:
@@ -525,6 +541,74 @@ def get_luminosity(conn):
 
         if record is not None:
             return record[0]
+        else:
+            return None
+    except sqlite3.Error as err:
+        print(f"ERROR: {err}")
+    finally:
+        cursor.close()
+
+
+def get_graph_temperature(conn):
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute(select_graph_temperature_query)
+        record = cursor.fetchall()
+
+        if record is not None:
+            return record
+        else:
+            return None
+    except sqlite3.Error as err:
+        print(f"ERROR: {err}")
+    finally:
+        cursor.close()
+
+
+def get_graph_ph_value(conn):
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute(select_graph_ph_value_query)
+        record = cursor.fetchall()
+
+        if record is not None:
+            return record
+        else:
+            return None
+    except sqlite3.Error as err:
+        print(f"ERROR: {err}")
+    finally:
+        cursor.close()
+
+
+def get_graph_humidity(conn):
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute(select_graph_humidity_query)
+        record = cursor.fetchall()
+
+        if record is not None:
+            return record
+        else:
+            return None
+    except sqlite3.Error as err:
+        print(f"ERROR: {err}")
+    finally:
+        cursor.close()
+
+
+def get_graph_luminosity(conn):
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute(select_graph_luminosity_query)
+        record = cursor.fetchall()
+
+        if record is not None:
+            return record
         else:
             return None
     except sqlite3.Error as err:

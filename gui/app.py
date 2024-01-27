@@ -4,13 +4,14 @@ from tkinter import *
 from tkinter import Tk, Toplevel, Label, LabelFrame, Button, Entry, Frame, messagebox, ttk, Canvas, filedialog
 from tkinter.messagebox import askyesno
 from PIL import Image, ImageTk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from gui.utils.helpers import get_container_status
+from gui.utils.helpers import get_container_status, create_line_chart
 from utils import db
 
 # Connect to a database
 script_directory = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(script_directory, "data", "Pyflora.db")
+db_path = os.path.join(script_directory, "utils", "data", "Pyflora.db")
 conn = db.get_connection(db_path)
 
 # root for gui
@@ -509,7 +510,7 @@ def details_pyflora_container(event, container_id):
     var_container_herb_id.set(container_herb_id)
     sync_button = Button(tp, text="SYNC", fg="green", width=12, command=sync_sensors)
     sync_button.pack(anchor=E, side=TOP, pady=20, padx=173)
-    if container_herb_id == None:
+    if container_herb_id is None:
         sync_button.config(state="disable")
     else:
         sync_button.config(state="normal")
@@ -551,11 +552,13 @@ def details_pyflora_container(event, container_id):
     Label(frame_2, textvariable=sensor_luminosity_stringvar, fg="green").grid(row=7, column=0, sticky=W, padx=136)
     Label(frame_2, text="Sensor value:air temperature", fg="red").grid(row=8, column=0, sticky=W, padx=136)
     Label(frame_2, textvariable=sensor_temperature_stringvar, fg="green").grid(row=9, column=0, sticky=W, padx=136)
-    canvas_graph = Canvas(frame_2, width=1020, height=405, bg="gray")
-    canvas_graph.grid(row=10, column=0, columnspan=2, sticky="w", padx=137)
-    Button(frame_2, text="HISTO", width=7, height=2, fg="green", bd="3").place(x=1063, y=360)
-    Button(frame_2, text="PIE", width=7, height=2, fg="green", bd="3").place(x=967, y=360)
-    Button(frame_2, text="LINE", width=7, height=2, fg="green", bd="3").place(x=870, y=360)
+    canvas_graph = FigureCanvasTkAgg(create_line_chart(), master=frame_2)
+    canvas_graph.draw()
+    canvas_widget = canvas_graph.get_tk_widget()
+    canvas_widget.grid(row=10, column=0, columnspan=2, sticky=W, padx=140)
+    # Button(frame_2, text="HISTO", width=7, height=2, fg="green", bd="3").place(x=1063, y=360)
+    # Button(frame_2, text="PIE", width=7, height=2, fg="green", bd="3").place(x=967, y=360)
+    # Button(frame_2, text="LINE", width=7, height=2, fg="green", bd="3").place(x=870, y=360)
     return event
 
 

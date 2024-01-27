@@ -1,12 +1,12 @@
 import os
 
 from matplotlib import pyplot as plt
-from numpy.random import randint
 
 from gui.utils import db
-from gui.utils.db import get_humidity, get_luminosity, get_temperature, get_ph_value
+from gui.utils.db import get_humidity, get_luminosity, get_temperature, get_ph_value, get_graph_temperature, \
+    get_graph_humidity, get_graph_luminosity, get_graph_ph_value
 
-script_directory = os.path.dirname(os.path.abspath("./data"))
+script_directory = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_directory, "data", "Pyflora.db")
 conn = db.get_connection(db_path)
 
@@ -52,13 +52,34 @@ def get_container_status(soil_moisture, luminosity, air_temperature, ph_value):
     return result_str
 
 
-def create_bar_chart():
-    # Generate some sample data
-    categories = ['Category 1', 'Category 2', 'Category 3', 'Category 4']
-    values = [randint(1, 10) for _ in range(len(categories))]
+def create_line_chart():
+    temp_y_values, temp_x_values = zip(*get_graph_temperature(conn))
+    hum_y_values, hum_x_values = zip(*get_graph_humidity(conn))
+    lum_y_values, lum_x_values = zip(*get_graph_luminosity(conn))
+    ph_y_values, ph_x_values = zip(*get_graph_ph_value(conn))
 
-    # Create a bar chart
-    fig, ax = plt.subplots()
-    ax.bar(categories, values)
-    ax.set_ylabel('Values')
-    ax.set_title('Bar Chart')
+    fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+
+    axs[0, 0].plot(temp_x_values, temp_y_values, label='Temperature', color='blue')
+    axs[0, 0].set_xlabel('Time')
+    axs[0, 0].set_ylabel('Temperature')
+    axs[0, 0].legend()
+
+    axs[0, 1].plot(hum_x_values, hum_y_values, label='Humidity', color='green')
+    axs[0, 1].set_xlabel('Time')
+    axs[0, 1].set_ylabel('Humidity')
+    axs[0, 1].legend()
+
+    axs[1, 0].plot(lum_x_values, lum_y_values, label='Luminosity', color='orange')
+    axs[1, 0].set_xlabel('Time')
+    axs[1, 0].set_ylabel('Luminosity')
+    axs[1, 0].legend()
+
+    axs[1, 1].plot(ph_x_values, ph_y_values, label='pH', color='red')
+    axs[1, 1].set_xlabel('Time')
+    axs[1, 1].set_ylabel('pH')
+    axs[1, 1].legend()
+
+    plt.tight_layout()
+
+    return fig
