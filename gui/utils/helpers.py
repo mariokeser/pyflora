@@ -12,10 +12,10 @@ conn = db.get_connection(db_path)
 
 
 def get_container_status(soil_moisture, luminosity, air_temperature, ph_value):
-    container_soil_moisture = get_humidity(conn=conn)
-    container_luminosity = get_luminosity(conn=conn)
-    container_air_temperature = get_temperature(conn=conn)
-    container_ph_value = get_ph_value(conn=conn)
+    container_soil_moisture = get_humidity(conn=conn) or 0
+    container_luminosity = get_luminosity(conn=conn) or 0
+    container_air_temperature = get_temperature(conn=conn) or 0
+    container_ph_value = get_ph_value(conn=conn) or 0
 
     if (
             container_soil_moisture == soil_moisture and
@@ -28,24 +28,24 @@ def get_container_status(soil_moisture, luminosity, air_temperature, ph_value):
         result = []
 
         if container_soil_moisture < soil_moisture:
-            result.append("Reduce water")
-        else:
             result.append("Add water")
+        else:
+            result.append("Reduce water")
 
         if container_luminosity < luminosity:
-            result.append("Decrease light exposure")
-        else:
             result.append("Increase light exposure")
+        else:
+            result.append("Decrease light exposure")
 
         if container_air_temperature < air_temperature:
-            result.append("Decrease temperature")
-        else:
             result.append("Increase temperature")
+        else:
+            result.append("Decrease temperature")
 
         if container_ph_value < ph_value:
-            result.append("Decrease pH value")
-        else:
             result.append("Increase pH value")
+        else:
+            result.append("Decrease pH value")
 
         result_str = "\n".join(result)
 

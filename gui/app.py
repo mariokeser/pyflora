@@ -20,7 +20,6 @@ root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
 
 
-# prvi window za login
 def login_window():
     global tp
     tp = Toplevel()
@@ -60,8 +59,6 @@ def login_window():
 
     root.bind("<Return>", update_date_profile)
 
-
-# za pohranu/odustanak od dodavanja novih pycontainera i povrat na window sa listom pycontainera-main window
 
 def store_addnew_pycontainer():
     global id_herb
@@ -135,8 +132,6 @@ def addnew_pycontainer(event):
     cancel_button.grid(row=7, column=0, sticky="e", pady=220, padx=173)
     return event
 
-
-# za gumb update/ažuriranje podataka o postojećim containerima
 
 def store_update_pycontainer():
     var_container_name.set(edit_container_name.get())
@@ -223,7 +218,6 @@ var_herb_width = StringVar(value="")
 var_herb_luminosity = StringVar(value="")
 var_herb_image = StringVar(value="")
 
-# za select/get images
 herb_image = StringVar(value="")
 bigimg_herb_photo = None
 smallimg_herb_photo = None
@@ -231,7 +225,6 @@ images = []
 thumbnail_photo = Label()
 
 
-# za dohvaćanje i prikaz imagesa iz
 def get_images():
     global bigimg_herb_photo, smallimg_herb_photo, thumbnail_photo, thumbnail_herb_photo, input_herb_photo
     if input_herb_photo == "":
@@ -517,7 +510,21 @@ def details_pyflora_container(event, container_id):
     var_container_id.set(containers_id)
     var_container_name.set(container_name)
     var_container_herb_id.set(container_herb_id)
-    sync_button = Button(tp, text="SYNC", fg="green", width=12, command=Tk.update(frame))
+    sensor_soil_moisture_stringvar = StringVar(value="")
+    sensor_ph_value_stringvar = StringVar(value="")
+    sensor_luminosity_stringvar = StringVar(value="")
+    sensor_temperature_stringvar = StringVar(value="")
+    sensor_soil_moisture_stringvar.set(str(db.get_humidity(conn)) + " %")
+    sensor_ph_value_stringvar.set(str(db.get_ph_value(conn)) + " pH")
+    sensor_luminosity_stringvar.set(str(db.get_luminosity(conn)) + " lm")
+    sensor_temperature_stringvar.set(str(db.get_temperature(conn)) + " °C")
+
+    def sync_data():
+        sensor_soil_moisture_stringvar.set(str(db.get_humidity(conn)) + " %")
+        sensor_ph_value_stringvar.set(str(db.get_ph_value(conn)) + " pH")
+        sensor_luminosity_stringvar.set(str(db.get_luminosity(conn)) + " lm")
+        sensor_temperature_stringvar.set(str(db.get_temperature(conn)) + " °C")
+    sync_button = Button(tp, text="SYNC", fg="green", width=12, command=sync_data)
     sync_button.pack(anchor=E, side=TOP, pady=20, padx=173)
     if container_herb_id is None:
         sync_button.config(state="disable")
@@ -543,14 +550,6 @@ def details_pyflora_container(event, container_id):
     img = Image.open(var_herb_image).resize((305, 305))
     img_obj = ImageTk.PhotoImage(img)
     canvas.create_image((0, 0), image=img_obj, anchor=NW)
-    sensor_soil_moisture_stringvar = StringVar(value="")
-    sensor_ph_value_stringvar = StringVar(value="")
-    sensor_luminosity_stringvar = StringVar(value="")
-    sensor_temperature_stringvar = StringVar(value="")
-    sensor_soil_moisture_stringvar.set(str(db.get_humidity(conn)) + " %")
-    sensor_ph_value_stringvar.set(str(db.get_ph_value(conn)) + " pH")
-    sensor_luminosity_stringvar.set(str(db.get_luminosity(conn)) + " lm")
-    sensor_temperature_stringvar.set(str(db.get_temperature(conn)) + " °C")
 
     Label(frame_2, text="Sensor value: soil moisture", fg="red").grid(row=2, column=0, sticky=W, padx=136)
     Label(frame_2, textvariable=sensor_soil_moisture_stringvar, fg="green").grid(row=3, column=0, sticky=W, padx=136)
@@ -562,9 +561,8 @@ def details_pyflora_container(event, container_id):
     Label(frame_2, text="Sensor value:air temperature", fg="red").grid(row=8, column=0, sticky=W, padx=136)
     Label(frame_2, textvariable=sensor_temperature_stringvar, fg="green").grid(row=9, column=0, sticky=W, padx=136)
     show_line_chart(frame_2)
-    Button(frame_2, text="HISTO", width=7, height=2, fg="green", bd="3", command=lambda: show_histogram(frame_2)).place(x=1063, y=360)
-    # Button(frame_2, text="PIE", width=7, height=2, fg="green", bd="3").place(x=967, y=360)
-    Button(frame_2, text="LINE", width=7, height=2, fg="green", bd="3", command=lambda: show_line_chart(frame_2)).place(x=967, y=360)
+    Button(frame_2, text="LINE", width=7, height=2, fg="green", bd="3", command=lambda: show_line_chart(frame_2)).place(x=600, y=310)
+    Button(frame_2, text="HISTO", width=7, height=2, fg="green", bd="3", command=lambda: show_histogram(frame_2)).place(x=696, y=310)
 
     return event
 
