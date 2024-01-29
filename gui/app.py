@@ -6,7 +6,7 @@ from tkinter.messagebox import askyesno
 from PIL import Image, ImageTk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from gui.utils.helpers import get_container_status, create_line_chart
+from gui.utils.helpers import get_container_status, create_line_chart, create_histogram
 from utils import db
 
 # Connect to a database
@@ -92,7 +92,7 @@ def addnew_pycontainer(event):
     tp = Toplevel()
     width = tp.winfo_screenwidth()
     height = tp.winfo_screenheight()
-    tp.geometry("%dx%d" % (width, height))
+    tp.geometry(f"{width}x{height}+0+0")
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
@@ -112,7 +112,7 @@ def addnew_pycontainer(event):
     Entry(frame_2, textvariable=input_container_name, background="white", fg="black", width=50).grid(row=2, column=0,
                                                                                                      pady=5, padx=173)
     all_herbs = db.get_all_herbs(conn=conn)
-    all_herbs.append({"id": [0], "name": "Empty Container"})
+    all_herbs.append({"id": None, "name": "Empty Container"})
     option_list = []
     for herb in all_herbs:
         option_list.append(herb["name"])
@@ -159,7 +159,7 @@ def update_pycontainer(event):
     tp = Toplevel()
     width = tp.winfo_screenwidth()
     height = tp.winfo_screenheight()
-    tp.geometry("%dx%d" % (width, height))
+    tp.geometry(f"{width}x{height}+0+0")
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
@@ -212,7 +212,6 @@ def update_pycontainer(event):
     return event
 
 
-# varijable za input iz get funkcije u entrye, labele i canvas
 var_herb_id = StringVar(value="")
 var_herb_name = StringVar(value="")
 var_herb_moisture = StringVar(value="")
@@ -306,7 +305,7 @@ def addnew_herb(event):
     tp = Toplevel()
     width = tp.winfo_screenwidth()
     height = tp.winfo_screenheight()
-    tp.geometry("%dx%d" % (width, height))
+    tp.geometry(f"{width}x{height}+0+0")
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
@@ -400,7 +399,7 @@ def update_herb(event):
     tp = Toplevel()
     width = tp.winfo_screenwidth()
     height = tp.winfo_screenheight()
-    tp.geometry("%dx%d" % (width, height))
+    tp.geometry(f"{width}x{height}+0+0")
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
@@ -482,8 +481,18 @@ var_container_name = StringVar(value="")
 var_container_herb_id = StringVar(value="")
 
 
-def sync_sensors():
-    db.App(conn)
+def show_histogram(frame_2):
+    canvas_graph = FigureCanvasTkAgg(create_histogram(), master=frame_2)
+    canvas_graph.draw()
+    canvas_widget = canvas_graph.get_tk_widget()
+    canvas_widget.grid(row=10, column=0, columnspan=2, sticky="w", padx=140)
+
+
+def show_line_chart(frame_2):
+    canvas_graph = FigureCanvasTkAgg(create_line_chart(), master=frame_2)
+    canvas_graph.draw()
+    canvas_widget = canvas_graph.get_tk_widget()
+    canvas_widget.grid(row=10, column=0, columnspan=2, sticky="w", padx=140)
 
 
 def details_pyflora_container(event, container_id):
@@ -493,7 +502,7 @@ def details_pyflora_container(event, container_id):
     tp = Toplevel()
     width = tp.winfo_screenwidth()
     height = tp.winfo_screenheight()
-    tp.geometry("%dx%d" % (width, height))
+    tp.geometry(f"{width}x{height}+0+0")
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
@@ -508,7 +517,7 @@ def details_pyflora_container(event, container_id):
     var_container_id.set(containers_id)
     var_container_name.set(container_name)
     var_container_herb_id.set(container_herb_id)
-    sync_button = Button(tp, text="SYNC", fg="green", width=12, command=sync_sensors)
+    sync_button = Button(tp, text="SYNC", fg="green", width=12, command=Tk.update(frame))
     sync_button.pack(anchor=E, side=TOP, pady=20, padx=173)
     if container_herb_id is None:
         sync_button.config(state="disable")
@@ -552,13 +561,11 @@ def details_pyflora_container(event, container_id):
     Label(frame_2, textvariable=sensor_luminosity_stringvar, fg="green").grid(row=7, column=0, sticky=W, padx=136)
     Label(frame_2, text="Sensor value:air temperature", fg="red").grid(row=8, column=0, sticky=W, padx=136)
     Label(frame_2, textvariable=sensor_temperature_stringvar, fg="green").grid(row=9, column=0, sticky=W, padx=136)
-    canvas_graph = FigureCanvasTkAgg(create_line_chart(), master=frame_2)
-    canvas_graph.draw()
-    canvas_widget = canvas_graph.get_tk_widget()
-    canvas_widget.grid(row=10, column=0, columnspan=2, sticky=W, padx=140)
-    # Button(frame_2, text="HISTO", width=7, height=2, fg="green", bd="3").place(x=1063, y=360)
+    show_line_chart(frame_2)
+    Button(frame_2, text="HISTO", width=7, height=2, fg="green", bd="3", command=lambda: show_histogram(frame_2)).place(x=1063, y=360)
     # Button(frame_2, text="PIE", width=7, height=2, fg="green", bd="3").place(x=967, y=360)
-    # Button(frame_2, text="LINE", width=7, height=2, fg="green", bd="3").place(x=870, y=360)
+    Button(frame_2, text="LINE", width=7, height=2, fg="green", bd="3", command=lambda: show_line_chart(frame_2)).place(x=967, y=360)
+
     return event
 
 
@@ -569,7 +576,9 @@ def main_window(event):
     global tp, var_herb_image, container, status_of_container
     tp.withdraw()
     tp = Toplevel()
-    tp.attributes("-fullscreen", False)  # geometry("%dx%d" %(width, height))
+    width = tp.winfo_screenwidth()
+    height = tp.winfo_screenheight()
+    tp.geometry(f"{width}x{height}+0+0")
     tp.title("")
     global img_obj
     global photo_filename
@@ -651,7 +660,7 @@ def details_herb(event, herb_id):
     tp = Toplevel()
     width = tp.winfo_screenwidth()
     height = tp.winfo_screenheight()
-    tp.geometry("%dx%d" % (width, height))
+    tp.geometry(f"{width}x{height}+0+0")
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
@@ -703,7 +712,7 @@ def herbs_window(event):
     tp = Toplevel()
     width = tp.winfo_screenwidth()
     height = tp.winfo_screenheight()
-    tp.geometry("%dx%d" % (width, height))
+    tp.geometry(f"{width}x{height}+0+0")
     tp.title("")
     frame = LabelFrame(tp)
     frame.pack(side=TOP, fill=X, ipady=10)
@@ -775,7 +784,7 @@ def edit_profile_screen():
     tp = Toplevel()
     width = tp.winfo_screenwidth()
     height = tp.winfo_screenheight()
-    tp.geometry("%dx%d" % (width, height))
+    tp.geometry(f"{width}x{height}+0+0")
     tp.focus()
 
     def update_profile():

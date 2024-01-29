@@ -58,7 +58,7 @@ def create_line_chart():
     lum_y_values, lum_x_values = zip(*get_graph_luminosity(conn))
     ph_y_values, ph_x_values = zip(*get_graph_ph_value(conn))
 
-    fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+    fig, axs = plt.subplots(2, 2, figsize=(10.2, 4))
 
     axs[0, 0].plot(temp_x_values, temp_y_values, label='Temperature', color='blue')
     axs[0, 0].set_xlabel('Time')
@@ -79,6 +79,39 @@ def create_line_chart():
     axs[1, 1].set_xlabel('Time')
     axs[1, 1].set_ylabel('pH')
     axs[1, 1].legend()
+
+    plt.tight_layout()
+
+    return fig
+
+
+def create_histogram():
+    temp_y_values, _ = zip(*get_graph_temperature(conn))
+    hum_y_values, _ = zip(*get_graph_humidity(conn))
+    lum_y_values, _ = zip(*get_graph_luminosity(conn))
+    ph_y_values, _ = zip(*get_graph_ph_value(conn))
+
+    fig, axs = plt.subplots(2, 2, figsize=(10.2, 4))
+
+    axs[0, 0].hist(temp_y_values, bins=20, color='blue', edgecolor='black')
+    axs[0, 0].set_title('Temperature Histogram')
+    axs[0, 0].set_xlabel('Temperature')
+    axs[0, 0].set_ylabel('Frequency')
+
+    axs[0, 1].hist(hum_y_values, bins=20, color='green', edgecolor='black')
+    axs[0, 1].set_title('Humidity Histogram')
+    axs[0, 1].set_xlabel('Humidity')
+    axs[0, 1].set_ylabel('Frequency')
+
+    axs[1, 0].hist(lum_y_values, bins=20, color='orange', edgecolor='black')
+    axs[1, 0].set_title('Luminosity Histogram')
+    axs[1, 0].set_xlabel('Luminosity')
+    axs[1, 0].set_ylabel('Frequency')
+
+    axs[1, 1].hist(ph_y_values, bins=20, color='red', edgecolor='black')
+    axs[1, 1].set_title('pH Histogram')
+    axs[1, 1].set_xlabel('pH')
+    axs[1, 1].set_ylabel('Frequency')
 
     plt.tight_layout()
 

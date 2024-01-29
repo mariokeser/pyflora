@@ -105,7 +105,7 @@ class Slider(Frame):
 
 if __name__ == "__main__":
     script_directory = os.path.dirname(os.path.abspath(__file__))
-    db_path = os.path.join(script_directory, "data", "Pyflora.db")
+    db_path = os.path.join(script_directory, "utils", "data", "Pyflora.db")
     db_client = db.get_connection(db_path)
     app = SimulatorApp(db_client)
     app.mainloop()
