@@ -116,3 +116,28 @@ def create_histogram():
     plt.tight_layout()
 
     return fig
+
+
+def create_box_chart():
+    temp_y_values, temp_x_values = zip(*get_graph_temperature(conn))
+    hum_y_values, hum_x_values = zip(*get_graph_humidity(conn))
+    lum_y_values, lum_x_values = zip(*get_graph_luminosity(conn))
+    ph_y_values, ph_x_values = zip(*get_graph_ph_value(conn))
+
+    fig, axs = plt.subplots(2, 2, figsize=(10.2, 4))
+
+    axs[0, 0].boxplot(temp_y_values, labels=['Temperature'], patch_artist=True, boxprops=dict(facecolor='blue'))
+    axs[0, 0].set_ylabel('Temperature')
+
+    axs[0, 1].boxplot(hum_y_values, labels=['Humidity'], patch_artist=True, boxprops=dict(facecolor='green'))
+    axs[0, 1].set_ylabel('Humidity')
+
+    axs[1, 0].boxplot(lum_y_values, labels=['Luminosity'], patch_artist=True, boxprops=dict(facecolor='orange'))
+    axs[1, 0].set_ylabel('Luminosity')
+
+    axs[1, 1].boxplot(ph_y_values, labels=['pH'], patch_artist=True, boxprops=dict(facecolor='red'))
+    axs[1, 1].set_ylabel('pH')
+
+    plt.tight_layout()
+
+    return fig

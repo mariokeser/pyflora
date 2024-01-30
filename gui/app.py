@@ -6,7 +6,7 @@ from tkinter.messagebox import askyesno
 from PIL import Image, ImageTk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from gui.utils.helpers import get_container_status, create_line_chart, create_histogram
+from gui.utils.helpers import get_container_status, create_line_chart, create_histogram, create_box_chart
 from utils import db
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
@@ -479,6 +479,13 @@ def show_line_chart(frame_2):
     canvas_widget.grid(row=10, column=0, columnspan=2, sticky="w", padx=140)
 
 
+def show_box_chart(frame_2):
+    canvas_graph = FigureCanvasTkAgg(create_box_chart(), master=frame_2)
+    canvas_graph.draw()
+    canvas_widget = canvas_graph.get_tk_widget()
+    canvas_widget.grid(row=10, column=0, columnspan=2, sticky="w", padx=140)
+
+
 def details_pyflora_container(event, container_id):
     global tp, var_herb_image
     tp.withdraw()
@@ -552,8 +559,9 @@ def details_pyflora_container(event, container_id):
     Label(frame_2, text="Sensor value:air temperature", fg="red").grid(row=8, column=0, sticky=W, padx=136)
     Label(frame_2, textvariable=sensor_temperature_stringvar, fg="green").grid(row=9, column=0, sticky=W, padx=136)
     show_line_chart(frame_2)
-    Button(frame_2, text="LINE", width=7, height=2, fg="green", bd="3", command=lambda: show_line_chart(frame_2)).place(x=600, y=310)
-    Button(frame_2, text="HISTO", width=7, height=2, fg="green", bd="3", command=lambda: show_histogram(frame_2)).place(x=696, y=310)
+    Button(frame_2, text="LINE", width=7, height=2, fg="green", bd="3", command=lambda: show_line_chart(frame_2)).place(x=567, y=310)
+    Button(frame_2, text="BOX", width=7, height=2, fg="green", bd="3", command=lambda: show_box_chart(frame_2)).place(x=663, y=310)
+    Button(frame_2, text="HISTO", width=7, height=2, fg="green", bd="3", command=lambda: show_histogram(frame_2)).place(x=759, y=310)
 
     return event
 
