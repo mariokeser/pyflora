@@ -9,12 +9,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from gui.utils.helpers import get_container_status, create_line_chart, create_histogram
 from utils import db
 
-# Connect to a database
 script_directory = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_directory, "utils", "data", "Pyflora.db")
 conn = db.get_connection(db_path)
 
-# root for gui
 root = Tk()
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
@@ -247,7 +245,6 @@ def add_herb_photo():
     get_images()
 
 
-# za dodavanje novih biljaka u windowu addnew herb
 input_herb_name = StringVar(value=" ")
 input_soil_moisture = StringVar(value=" ")
 input_luminosity = StringVar(value=" ")
@@ -348,7 +345,6 @@ def addnew_herb(event):
     return event
 
 
-# za gumb update/ažuriranje podataka o postojećoj/dodanoj biljci
 def store_update_herb():
     global var_herb_image, input_herb_photo
 
@@ -455,7 +451,6 @@ def update_herb(event):
     return event
 
 
-# window sa detaljima o konkretnom pycontaineru
 def delete_button_pycontainer():
     answer = askyesno(title="confirmation", message="Are you sure that you want to proceed with delete action?")
     if answer:
@@ -638,7 +633,6 @@ def main_window(event):
     return event
 
 
-# window sa detaljima o konkretnoj biljci
 def delete_button_herb():
     answer = askyesno(title="confirmation", message="Are you sure that you want to proceed with delete action?")
     if answer:
@@ -703,7 +697,6 @@ def details_herb(event, herb_id):
     return event
 
 
-# window sa listom dohvaćenih/postavljenih biljaka
 def herbs_window(event):
     global tp, smallimg_herb_photo, images
     tp.withdraw()
@@ -764,12 +757,10 @@ def herbs_window(event):
     return event
 
 
-# za update podataka o useru/adminu
 def update_data():
     db.update_user(conn, var_name.get(), var_lastname.get(), var_password.get(), var_username.get())
 
 
-# window za ueđivanje podataka o useru/adminu
 var_edit_name = StringVar()
 var_edit_lastname = StringVar()
 var_edit_username = StringVar()
@@ -838,8 +829,6 @@ def edit_profile_screen():
     tp.mainloop()
 
 
-# window sa podacima o profilu usera/admina
-
 var_name = StringVar(value="Name")
 var_lastname = StringVar(value="Last name")
 var_username = StringVar(value="Username")
@@ -904,7 +893,6 @@ def my_profile():
     new_root.mainloop()
 
 
-# Starting the gui
 if __name__ == '__main__':
     login_window()
 
